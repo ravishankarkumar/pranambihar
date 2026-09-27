@@ -19,4 +19,20 @@ const stories = defineCollection({
   }),
 });
 
-export const collections = { stories };
+const foods = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/foods' }),
+  schema: z.object({
+    name: z.string(),
+    localName: z.string().optional(),
+    description: z.string(),
+    category: z.enum(['Main dishes', 'Everyday table', 'Breads & snacks', 'Drinks', 'Sweets & festival foods']),
+    region: z.string(),
+    season: z.string(),
+    vegetarian: z.boolean(),
+    featured: z.boolean().default(false),
+    accent: z.enum(['gold', 'blue', 'red', 'green', 'clay', 'indigo']),
+    sources: z.array(z.object({ label: z.string(), url: z.string().url() })).default([]),
+  }),
+});
+
+export const collections = { stories, foods };

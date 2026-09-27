@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { food: CollectionEntry<'foods'>; index?: number; }
+const { food, index = 0 } = Astro.props;
+---
+<article class={`food-card accent-${food.data.accent}`}>
+  <a class="plate" href={`/foods/${food.id}/`} aria-label={`Discover ${food.data.name}`}><span>{food.data.localName || food.data.name}</span><i>{String(index + 1).padStart(2,'0')}</i></a>
+  <div class="copy"><p>{food.data.category} · {food.data.region}</p><h3><a href={`/foods/${food.id}/`}>{food.data.name}</a></h3><div class="details"><span>{food.data.season}</span><span>{food.data.vegetarian ? 'Vegetarian' : 'Non-vegetarian'}</span></div></div>
+</article>
+<style>
+  .food-card{background:#fff;border:1px solid rgba(20,44,39,.15)}
+  .plate{height:195px;background:var(--food-bg);color:var(--food-ink);display:grid;place-items:center;position:relative;overflow:hidden}
+  .plate:before,.plate:after{content:'';position:absolute;border:1px solid currentColor;border-radius:50%;width:170px;height:170px;opacity:.26}
+  .plate:after{width:115px;height:115px}
+  .plate span{font:30px Georgia;z-index:1}
+  .plate i{font:italic 12px Georgia;position:absolute;right:15px;bottom:12px}
+  .copy{padding:22px}
+  .copy>p{font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#a9432e}
+  .copy h3{font:27px/1.1 Georgia;margin:9px 0 22px}
+  .copy h3 a:hover{color:#a9432e}
+  .details{display:flex;justify-content:space-between;gap:12px;border-top:1px solid rgba(20,44,39,.13);padding-top:13px;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#69706b}
+  .accent-gold{--food-bg:#d7ad57;--food-ink:#402b16}
+  .accent-blue{--food-bg:#718f90;--food-ink:#f8f2e8}
+  .accent-red{--food-bg:#a94e39;--food-ink:#f8e9d4}
+  .accent-green{--food-bg:#8da08b;--food-ink:#173029}
+  .accent-clay{--food-bg:#c78b64;--food-ink:#40251b}
+  .accent-indigo{--food-bg:#475b72;--food-ink:#f8f2e8}
+  @media(max-width:700px){.plate{height:150px}.plate span{font-size:24px}.copy{padding:16px}.copy h3{font-size:23px}.details{display:grid}}
+</style>

@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import FoodCard from '../../components/FoodCard.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+const foods = await getCollection('foods');
+const flagshipIds = ['litti-chokha','champaran-meat','dal-pitha','thekua','silao-khaja','gaya-tilkut'];
+const flagships = flagshipIds.map(id => foods.find(food => food.id === id)).filter(food => food !== undefined);
+const categories = ['Main dishes','Everyday table','Breads & snacks','Drinks','Sweets & festival foods'] as const;
+const extendedFoods = foods.filter(food => !flagshipIds.includes(food.id));
+const foodStory = (await getCollection('stories')).find(story => story.id === 'makhana-country');
+---
+<SiteLayout title="Food" description="Explore Bihar’s food through dishes, ingredients, seasons, regions and the people who sustain them." eyebrow="Food & Land" heading="A table with many stories." intro="Bihar does not have one cuisine. Explore dishes through their regions, seasons, techniques and living household variations.">
+  <section class="food-intro"><div class="wrap intro-grid"><p>From the smoke held inside litti to the fine layers of Silao khaja, food in Bihar is a record of climate, movement, celebration and skilled hands.</p><div><span>{foods.length}</span><small>dishes in the growing atlas</small></div><a href={foodStory ? `/stories/${foodStory.id}/` : '/stories/'}>Read Makhana Country →</a></div></section>
+
+  <section class="flagship wrap">
+    <div class="section-title"><div><p class="tag">Begin here</p><h2>Flagships of<br/><em>Bihar’s table.</em></h2></div><p>Six widely recognised dishes and sweets—each an invitation into a much larger regional food culture.</p></div>
+    <div class="flagship-grid">{flagships.map((food,index) => <FoodCard food={food} index={index}/>)}</div>
+  </section>
+
+  <section class="more-foods">
+    <div class="wrap more-heading"><p class="tag">Go beyond the familiar</p><h2>More from Bihar’s table.</h2><p>Everyday plates, street snacks, cooling drinks and place-specific sweets.</p></div>
+    <nav class="category-nav wrap" aria-label="Food categories">{categories.map((category,i) => <a href={`#category-${i+1}`}>{category}</a>)}</nav>
+    {categories.map((category,categoryIndex) => {
+      const items = extendedFoods.filter(food => food.data.category === category).sort((a,b) => a.data.name.localeCompare(b.data.name));
+      if (!items.length) return null;
+      return <section class="compact-category" id={`category-${categoryIndex+1}`}><div class="wrap"><div class="category-title"><span>0{categoryIndex+1}</span><h3>{category}</h3><p>{items.length} entries</p></div><div class="compact-grid">{items.map(food => <a class={`compact-card accent-${food.data.accent}`} href={`/foods/${food.id}/`}><span class="compact-visual"><b>{food.data.localName?.slice(0,1) || 'ब'}</b></span><div class="compact-copy"><small>{food.data.region}</small><h4>{food.data.name}</h4><p>{food.data.season}</p></div><i>↗</i></a>)}</div></div></section>
+    })}
+  </section>
+
+  <section class="variation"><div class="wrap"><p class="tag">An evolving atlas</p><h2>One name can hold<br/><em>many family recipes.</em></h2><p>Descriptions here are starting points, not declarations of a single “authentic” version. As the atlas grows, we will document regional names, household methods and the people who carry this knowledge.</p></div></section>
+</SiteLayout>
+<style>
+  .food-intro{padding:55px 0;background:#142c27;color:#f4eee2}.intro-grid{display:grid;grid-template-columns:1.4fr .7fr .8fr;gap:50px;align-items:center}.intro-grid>p{font:22px/1.5 Georgia;margin:0}.intro-grid>div{display:flex;gap:12px;align-items:center}.intro-grid>div span{font:50px Georgia;color:#e9a93a}.intro-grid small{text-transform:uppercase;letter-spacing:.1em;line-height:1.4}.intro-grid>a{font-size:10px;text-transform:uppercase;letter-spacing:.12em;border-bottom:1px solid;width:max-content}.flagship{padding:100px 0 125px}.section-title{display:grid;grid-template-columns:1fr 380px;gap:60px;align-items:end;margin-bottom:48px}.tag{text-transform:uppercase;letter-spacing:.18em;color:#a9432e;font-size:10px;font-weight:bold}.section-title h2,.more-heading h2{font:clamp(46px,5.5vw,76px)/.98 Georgia;margin:15px 0 0}.section-title h2 em{color:#e0a33c;font-weight:normal}.section-title>p,.more-heading>p:last-child{color:#69706b}.flagship-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.more-foods{background:#f0eadd;padding:95px 0 110px}.more-heading{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:35px;align-items:end}.more-heading h2{font-size:53px}.more-heading p{margin:0}.category-nav{display:flex;gap:9px;padding-top:42px;padding-bottom:18px;overflow:auto}.category-nav a{white-space:nowrap;border:1px solid rgba(20,44,39,.23);border-radius:30px;padding:9px 14px;font-size:9px;text-transform:uppercase;letter-spacing:.1em;background:#f0eadd}.category-nav a:hover{background:#142c27;color:#f4eee2}.compact-category{padding:48px 0 10px}.category-title{display:grid;grid-template-columns:45px 1fr auto;align-items:end;border-bottom:1px solid rgba(20,44,39,.2);padding-bottom:17px;margin-bottom:18px}.category-title span{font-size:10px;color:#a9432e}.category-title h3{font:32px Georgia;margin:0}.category-title p{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#69706b;margin:0}.compact-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.compact-card{display:grid;grid-template-columns:58px 1fr 20px;gap:17px;align-items:center;background:#fbf8f1;border:1px solid rgba(20,44,39,.12);padding:20px;transition:transform .2s,background .2s}.compact-card:hover{transform:translateX(5px);background:#fff}.glyph{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--mini-color);color:#fff;font:22px Georgia}.compact-card small{text-transform:uppercase;letter-spacing:.09em;font-size:8px;color:#a9432e}.compact-card h4{font:24px Georgia;margin:4px 0}.compact-card p{font-size:12px;line-height:1.45;color:#69706b;margin:0}.compact-card i{font-style:normal}.accent-gold{--mini-color:#b9892d}.accent-blue{--mini-color:#66888a}.accent-red{--mini-color:#a94e39}.accent-green{--mini-color:#70876d}.accent-clay{--mini-color:#b87550}.accent-indigo{--mini-color:#475b72}.variation{padding:100px 0;background:#e6d8c1}.variation h2{font:clamp(45px,6vw,76px)/1 Georgia;margin:18px 0 25px}.variation h2 em{color:#a9432e;font-weight:normal}.variation>div>p:last-child{max-width:610px;color:#5f6864}
+  /* Dense, image-ready food atlas layout. */
+  .flagship-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+  .compact-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+  .compact-card{position:relative;display:block;min-width:0;padding:0;overflow:hidden;background:#fbf8f1;transition:transform .2s,box-shadow .2s}
+  .compact-card:hover{transform:translateY(-4px);background:#fff;box-shadow:0 14px 28px rgba(20,44,39,.11)}
+  .compact-visual{aspect-ratio:4/3;display:grid;place-items:center;position:relative;overflow:hidden;background:var(--mini-color);color:#fff}
+  .compact-visual:before,.compact-visual:after{content:'';position:absolute;width:72%;aspect-ratio:1;border:1px solid currentColor;border-radius:50%;opacity:.28}
+  .compact-visual:after{width:46%}
+  .compact-visual b{font:29px Georgia;font-weight:normal;z-index:1}
+  .compact-copy{padding:14px}
+  .compact-card small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:7px;letter-spacing:.08em}
+  .compact-card h4{font:20px/1.05 Georgia;margin:6px 0 11px}
+  .compact-card p{font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:#69706b;margin:0;padding-right:15px}
+  .compact-card i{position:absolute;right:10px;bottom:9px;font-size:11px}
+  @media(max-width:1000px){.flagship-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.more-heading{grid-template-columns:1fr}.compact-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+  @media(max-width:700px){.intro-grid,.section-title{grid-template-columns:1fr;gap:28px}.flagship{padding:75px 0 90px}.flagship-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.more-foods{padding:70px 0}.more-heading h2{font-size:43px}.category-nav{margin-right:0}.category-title{grid-template-columns:32px 1fr}.category-title p{grid-column:2}.compact-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.compact-card h4{font-size:19px}.variation{padding:75px 0}}
+</style>

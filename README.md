@@ -24,3 +24,7 @@ Stories live in `src/content/stories` as Markdown files. Copy an existing entry 
 The allowed pillar keys are `places`, `food`, `culture`, `people`, `history` and `now`. Astro validates this metadata during every build and automatically creates the article URL from the filename.
 
 Public-facing research and corrections commitments appear at `/editorial-standards/`.
+
+## Adding a food entry
+
+The food atlas lives in `src/content/foods`. Each Markdown entry includes its category, region, season, dietary classification, visual accent and starting sources. Astro validates the entry and creates its `/foods/<filename>/` route automatically.

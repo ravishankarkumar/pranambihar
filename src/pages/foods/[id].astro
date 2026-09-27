@@ -1,0 +1,24 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+export async function getStaticPaths() {
+  const foods = await getCollection('foods');
+  return foods.map((food) => ({ params: { id: food.id }, props: { food } }));
+}
+
+interface Props { food: CollectionEntry<'foods'>; }
+const { food } = Astro.props;
+const { Content } = await render(food);
+---
+<SiteLayout title={food.data.name} description={food.data.description} eyebrow={`${food.data.category} · ${food.data.region}`} heading={food.data.name} intro={food.data.description}>
+  <article class="food-profile">
+    <div class="facts wrap"><div><small>Region</small><strong>{food.data.region}</strong></div><div><small>Season</small><strong>{food.data.season}</strong></div><div><small>Table</small><strong>{food.data.vegetarian ? 'Vegetarian' : 'Non-vegetarian'}</strong></div>{food.data.localName && <div><small>Also written</small><strong>{food.data.localName}</strong></div>}</div>
+    <div class="body wrap"><aside><span>Food & Land</span><p>Recipes, names and serving traditions vary between regions and households. This entry is a starting point for a growing, reported atlas.</p></aside><div class="prose"><Content /></div></div>
+    {food.data.sources.length > 0 && <section class="sources wrap"><p>Starting references</p><ul>{food.data.sources.map(source => <li><a href={source.url} target="_blank" rel="noreferrer">{source.label} ↗</a></li>)}</ul></section>}
+    <div class="next wrap"><a href="/foods/">← Return to the food atlas</a><a href="/stories/makhana-country/">Read a food story →</a></div>
+  </article>
+</SiteLayout>
+<style>
+  .food-profile{padding-bottom:120px}.facts{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(20,44,39,.16)}.facts>div{padding:27px 22px;border-right:1px solid rgba(20,44,39,.16)}.facts>div:last-child{border-right:0}.facts small,.facts strong{display:block}.facts small{text-transform:uppercase;letter-spacing:.13em;font-size:9px;color:#a9432e;margin-bottom:7px}.facts strong{font:17px Georgia;font-weight:normal}.body{display:grid;grid-template-columns:190px minmax(0,680px);justify-content:center;gap:70px;padding-top:75px}.body aside span{font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:#a9432e;font-weight:bold}.body aside p{font-size:12px;color:#69706b;line-height:1.7}.prose{font:19px/1.85 Georgia;color:#3e4b47}.prose :global(p:first-child){font-size:25px;line-height:1.6;color:#142c27}.prose :global(h2){font:40px/1.1 Georgia;color:#142c27;margin:55px 0 18px}.sources{max-width:900px;border-top:1px solid rgba(20,44,39,.16);padding-top:25px;margin-top:60px}.sources>p{text-transform:uppercase;letter-spacing:.14em;font-size:9px;color:#a9432e;font-weight:bold}.sources ul{padding:0;list-style:none}.sources a{font-size:13px;border-bottom:1px solid}.next{margin-top:75px;padding:35px;background:#142c27;color:#f4eee2;display:flex;justify-content:space-between}.next a{font-size:10px;text-transform:uppercase;letter-spacing:.11em}@media(max-width:760px){.facts{grid-template-columns:1fr 1fr}.facts>div:nth-child(2){border-right:0}.facts>div{border-bottom:1px solid rgba(20,44,39,.16)}.body{grid-template-columns:1fr;gap:30px;padding-top:50px}.prose{font-size:18px}.prose :global(p:first-child){font-size:22px}.next{margin-left:24px;margin-right:24px;gap:20px;flex-direction:column}}
+</style>
