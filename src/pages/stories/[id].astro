@@ -1,0 +1,29 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+export async function getStaticPaths() {
+  const stories = await getCollection('stories');
+  return stories.map((story) => ({ params: { id: story.id }, props: { story } }));
+}
+
+interface Props { story: CollectionEntry<'stories'>; }
+const { story } = Astro.props;
+const { Content } = await render(story);
+const published = story.data.publishedAt.toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+const verified = story.data.verifiedAt.toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+---
+<SiteLayout title={story.data.title} description={story.data.dek} eyebrow={`${story.data.pillarLabel} · ${story.data.format}`} heading={story.data.title} intro={story.data.dek}>
+  <article class="article-shell">
+    <div class="article-meta wrap"><span>{story.data.district}</span><span>{story.data.readTime} minute read</span><span>Published {published}</span></div>
+    <div class="article-layout wrap">
+      <aside><p class="label">Filed under</p><a href="/stories/">{story.data.pillarLabel}</a><p class="verified">Facts last reviewed<br/><strong>{verified}</strong></p></aside>
+      <div class="article-body"><Content /></div>
+    </div>
+    {story.data.sources.length > 0 && <section class="sources wrap"><p class="label">Sources & further reading</p><ol>{story.data.sources.map(source => <li><a href={source.url} rel="noreferrer" target="_blank">{source.label} ↗</a></li>)}</ol></section>}
+    <div class="next wrap"><p>Continue exploring Bihar through place, memory and possibility.</p><a href="/stories/">All stories →</a></div>
+  </article>
+</SiteLayout>
+<style>
+  .article-shell{padding-bottom:120px}.article-meta{display:flex;gap:28px;padding-top:28px;padding-bottom:28px;border-bottom:1px solid rgba(20,44,39,.16);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#69706b}.article-layout{display:grid;grid-template-columns:180px minmax(0,680px);gap:70px;justify-content:center;padding-top:75px}.article-layout aside{font-size:12px}.label{text-transform:uppercase;letter-spacing:.15em;font:9px Arial;color:#a9432e;font-weight:bold}.article-layout aside a{font:18px Georgia;border-bottom:1px solid}.verified{margin-top:45px;color:#69706b;line-height:1.7}.verified strong{color:#142c27;font-weight:normal}.article-body{font:19px/1.85 Georgia;color:#3e4b47}.article-body :global(p:first-child){font-size:25px;line-height:1.6;color:#142c27}.article-body :global(h2){font:42px/1.1 Georgia;color:#142c27;margin:60px 0 18px}.article-body :global(ul){padding-left:20px}.article-body :global(li){margin:10px 0}.sources{max-width:900px;margin-top:75px;padding-top:30px;border-top:1px solid rgba(20,44,39,.16)}.sources ol{padding-left:18px}.sources a{border-bottom:1px solid;font-size:14px}.next{margin-top:80px;background:#142c27;color:#f4eee2;padding:45px;display:flex;justify-content:space-between;align-items:center}.next p{font:24px Georgia;margin:0}.next a{font-size:10px;text-transform:uppercase;letter-spacing:.12em}@media(max-width:760px){.article-meta{overflow:auto;white-space:nowrap}.article-layout{grid-template-columns:1fr;gap:35px;padding-top:50px}.article-layout aside{display:flex;justify-content:space-between;align-items:start;border-bottom:1px solid rgba(20,44,39,.16);padding-bottom:25px}.verified{margin:0}.article-body{font-size:18px}.article-body :global(p:first-child){font-size:22px}.article-body :global(h2){font-size:34px}.next{margin-left:24px;margin-right:24px;flex-direction:column;align-items:flex-start;gap:25px}}
+</style>

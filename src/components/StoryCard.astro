@@ -1,0 +1,18 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { story: CollectionEntry<'stories'>; index?: number; }
+const { story, index = 0 } = Astro.props;
+const date = story.data.publishedAt.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+---
+<article class={`story-card accent-${story.data.accent}`} data-pillar={story.data.pillar}>
+  <a class="art" href={`/stories/${story.id}/`} aria-label={`Read ${story.data.title}`}><span>{String(index + 1).padStart(2, '0')}</span><b>{story.data.pillarLabel.split(' ')[0]}</b></a>
+  <div class="body">
+    <p class="meta">{story.data.pillarLabel} · {story.data.format}</p>
+    <h2><a href={`/stories/${story.id}/`}>{story.data.title}</a></h2>
+    <p class="dek">{story.data.dek}</p>
+    <div class="foot"><span>{story.data.district}</span><span>{story.data.readTime} min · {date}</span></div>
+  </div>
+</article>
+<style>
+  .story-card{background:#fff;border:1px solid rgba(20,44,39,.16);display:flex;flex-direction:column;min-width:0;transition:transform .25s,box-shadow .25s}.story-card:hover{transform:translateY(-5px);box-shadow:0 20px 45px rgba(20,44,39,.09)}.art{height:210px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--card-color);color:var(--card-ink)}.art:before,.art:after{content:'';position:absolute;border:1px solid currentColor;border-radius:50%;width:150px;height:150px;opacity:.25}.art:after{width:95px;height:95px}.art span{position:absolute;right:16px;bottom:13px;font:italic 13px Georgia}.art b{font:31px Georgia;font-weight:normal;z-index:1}.body{padding:25px;display:flex;flex:1;flex-direction:column}.meta{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:#a9432e;font-weight:bold}.body h2{font:29px/1.08 Georgia;margin:8px 0 13px}.body h2 a:hover{color:#a9432e}.dek{font-size:14px;line-height:1.55;color:#69706b;flex:1}.foot{display:flex;justify-content:space-between;gap:15px;border-top:1px solid rgba(20,44,39,.13);padding-top:15px;margin-top:18px;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#69706b}.accent-gold{--card-color:#d9a94c;--card-ink:#482c16}.accent-blue{--card-color:#66888a;--card-ink:#f4eee2}.accent-red{--card-color:#b05a43;--card-ink:#f6e8d5}.accent-green{--card-color:#8b9c83;--card-ink:#142c27}.accent-clay{--card-color:#c68a64;--card-ink:#40251b}.accent-indigo{--card-color:#42566f;--card-ink:#f4eee2}
+</style>

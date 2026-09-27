@@ -1,9 +1,15 @@
 ---
-const stories = [
-  { tag: 'People', title: 'The hands behind Madhubani', text: 'Meet the artists keeping an ancient visual language alive—and making it entirely their own.', tone: 'ochre', mark: 'कला' },
-  { tag: 'History', title: 'Nalanda: a world of ideas', text: 'Long before the modern university, seekers crossed continents to learn on the plains of Bihar.', tone: 'blue', mark: 'ज्ञान' },
-  { tag: 'Food', title: 'More than litti chokha', text: 'From silao khaja to winter tilkut, a generous food culture shaped by land and season.', tone: 'red', mark: 'स्वाद' },
-];
+import { getCollection } from 'astro:content';
+const marks: Record<string,string> = { places:'यात्रा', food:'स्वाद', culture:'कला', people:'लोग', history:'ज्ञान', now:'आज' };
+const tones = ['ochre','blue','red'];
+const featuredStories = (await getCollection('stories')).filter(story => story.data.featured).slice(0,3).map((story,index) => ({
+  id: story.id,
+  tag: story.data.pillarLabel,
+  title: story.data.title,
+  text: story.data.dek,
+  tone: tones[index],
+  mark: marks[story.data.pillar],
+}));
 
 const places = [
   { number: '01', name: 'Bodh Gaya', note: 'Where silence changed the world', symbol: '◉' },
@@ -77,10 +83,10 @@ const people = [
           <a class="text-link desktop-link" href="/stories/">View all stories <span>→</span></a>
         </div>
         <div class="story-grid">
-          {stories.map((story, i) => (
+          {featuredStories.map((story, i) => (
             <article class={`story-card ${i === 0 ? 'featured' : ''}`}>
               <div class={`story-art ${story.tone}`}><span>{story.mark}</span><i>{String(i + 1).padStart(2, '0')}</i></div>
-              <div class="story-body"><p class="card-tag">{story.tag}</p><h3>{story.title}</h3><p>{story.text}</p><a href="/stories/" aria-label={`Read ${story.title}`}>↗</a></div>
+              <div class="story-body"><p class="card-tag">{story.tag}</p><h3>{story.title}</h3><p>{story.text}</p><a href={`/stories/${story.id}/`} aria-label={`Read ${story.title}`}>↗</a></div>
             </article>
           ))}
         </div>
@@ -131,7 +137,7 @@ const people = [
     </main>
 
     <footer>
-      <div class="wrap footer-top"><a class="brand footer-brand" href="#top"><span class="brand-mark">प</span><span><strong>PRANAM</strong><small>BIHAR</small></span></a><p>Looking at Bihar with fresh eyes.<br/>Telling the stories that deserve to travel.</p><nav><a href="/stories/">Stories</a><a href="/places/">Places</a><a href="/people/">People</a><a href="/about/">About</a></nav></div>
+      <div class="wrap footer-top"><a class="brand footer-brand" href="#top"><span class="brand-mark">प</span><span><strong>PRANAM</strong><small>BIHAR</small></span></a><p>Looking at Bihar with fresh eyes.<br/>Telling the stories that deserve to travel.</p><nav><a href="/stories/">Stories</a><a href="/places/">Places</a><a href="/people/">People</a><a href="/about/">About</a><a href="/editorial-standards/">Standards</a></nav></div>
       <div class="wrap footer-bottom"><span>© {new Date().getFullYear()} Pranam Bihar</span><span>Made with respect in Bihar</span></div>
     </footer>
 

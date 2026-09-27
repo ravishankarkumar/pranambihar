@@ -1,7 +1,35 @@
 ---
+import { getCollection } from 'astro:content';
+import StoryCard from '../components/StoryCard.astro';
 import SiteLayout from '../layouts/SiteLayout.astro';
-const stories=[['People','The hands behind Madhubani','Meet the artists keeping an ancient visual language alive—and making it entirely their own.'],['History','Nalanda: a world of ideas','How one of the ancient world’s greatest centres of learning drew seekers across continents.'],['Food','More than litti chokha','A journey through silao khaja, tilkut, thekua and a generous cuisine shaped by the seasons.'],['Culture','Chhath at first light','Faith, water and community come together on the riverbank in Bihar’s most luminous tradition.'],['Ideas','The argument that changed India','Bihar’s long relationship with debate, dissent and democratic imagination.'],['Everyday Bihar','A river is never just a river','Life beside the Ganga: work, worship, memory and an ever-changing landscape.']];
+const stories = (await getCollection('stories')).sort((a,b) => Number(b.data.featured) - Number(a.data.featured) || b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+const pillars = [['all','All stories'],['places','Places & Journeys'],['food','Food & Land'],['culture','Arts & Culture'],['people','People'],['history','History & Ideas'],['now','Bihar Now']];
 ---
-<SiteLayout title="Stories" description="Stories about Bihar’s culture, history, food and everyday life." eyebrow="The journal" heading="Stories worth carrying." intro="Long reads, field notes and portraits that look beyond easy narratives to the Bihar people know, make and love.">
-  <section class="collection"><div class="wrap grid">{stories.map((s,i)=><article class="card"><span class="number">{String(i+1).padStart(2,'0')}</span><p class="tag">{s[0]}</p><h2>{s[1]}</h2><p>{s[2]}</p><a href="/about/">Coming soon →</a></article>)}</div></section>
+<SiteLayout title="Stories" description="Reported stories about Bihar’s places, food, culture, people, history and future." eyebrow="The journal" heading="Stories worth carrying." intro="An expanding, sourced collection that connects Bihar’s inheritance with the people and possibilities shaping its future.">
+  <section class="story-index">
+    <div class="wrap">
+      <div class="filters" aria-label="Filter stories by pillar">{pillars.map(([key,label], i) => <button class:list={{active:i===0}} type="button" data-filter={key}>{label}</button>)}</div>
+      <div class="story-grid">{stories.map((story,i) => <StoryCard story={story} index={i}/>)}</div>
+      <p class="empty" hidden>No stories in this collection yet.</p>
+    </div>
+  </section>
+  <script>
+    const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-pillar]')];
+    const empty = document.querySelector<HTMLElement>('.empty');
+    buttons.forEach(button => button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+      buttons.forEach(item => item.classList.toggle('active', item === button));
+      let visible = 0;
+      cards.forEach(card => {
+        const show = filter === 'all' || card.dataset.pillar === filter;
+        card.hidden = !show;
+        if (show) visible += 1;
+      });
+      if (empty) empty.hidden = visible > 0;
+    }));
+  </script>
 </SiteLayout>
+<style>
+  .story-index{padding:55px 0 130px}.filters{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:35px;margin-bottom:40px;border-bottom:1px solid rgba(20,44,39,.16)}.filters button{background:transparent;border:1px solid rgba(20,44,39,.25);border-radius:40px;padding:9px 14px;color:#142c27;font:10px Arial;text-transform:uppercase;letter-spacing:.08em;cursor:pointer}.filters button.active,.filters button:hover{background:#142c27;color:#f4eee2}.story-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.empty{text-align:center;color:#69706b;padding:80px 0}.story-grid :global([hidden]){display:none}@media(max-width:900px){.story-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.story-index{padding-top:35px}.story-grid{grid-template-columns:1fr}.filters{flex-wrap:nowrap;overflow:auto;margin-right:-24px;padding-right:24px}.filters button{white-space:nowrap}}
+</style>

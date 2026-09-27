@@ -8,7 +8,7 @@ const { title, description, eyebrow, heading, intro } = Astro.props;
 <body>
   <header><a class="brand" href="/"><b>प</b><span><strong>PRANAM</strong><small>BIHAR</small></span></a><nav><a href="/stories/">Stories</a><a href="/places/">Places</a><a href="/people/">People</a><a href="/about/">About Bihar</a></nav><a class="home" href="/">Home ↗</a></header>
   <main><section class="page-hero"><div class="wrap"><p class="kicker">{eyebrow}</p><h1>{heading}</h1><p class="intro">{intro}</p></div></section><slot /></main>
-  <footer><div class="wrap"><a class="brand inverse" href="/"><b>प</b><span><strong>PRANAM</strong><small>BIHAR</small></span></a><p>Looking at Bihar with fresh eyes.<br/>Telling the stories that deserve to travel.</p><nav><a href="/stories/">Stories</a><a href="/places/">Places</a><a href="/people/">People</a><a href="/about/">About</a></nav></div><div class="wrap copyright">© {new Date().getFullYear()} Pranam Bihar <span>Made with respect in Bihar</span></div></footer>
+  <footer><div class="wrap"><a class="brand inverse" href="/"><b>प</b><span><strong>PRANAM</strong><small>BIHAR</small></span></a><p>Looking at Bihar with fresh eyes.<br/>Telling the stories that deserve to travel.</p><nav><a href="/stories/">Stories</a><a href="/places/">Places</a><a href="/people/">People</a><a href="/about/">About</a><a href="/editorial-standards/">Standards</a></nav></div><div class="wrap copyright">© {new Date().getFullYear()} Pranam Bihar <span>Made with respect in Bihar</span></div></footer>
 </body>
 </html>
 <style is:global>
