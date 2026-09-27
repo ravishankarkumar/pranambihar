@@ -1,0 +1,23 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+export async function getStaticPaths() {
+  const places = await getCollection('places');
+  return places.map((place) => ({ params: { id: place.id }, props: { place } }));
+}
+interface Props { place: CollectionEntry<'places'>; }
+const { place } = Astro.props;
+const { Content } = await render(place);
+---
+<SiteLayout title={place.data.name} description={place.data.description} eyebrow={`${place.data.kind} · ${place.data.district}`} heading={place.data.name} intro={place.data.description}>
+  <article class="place-profile">
+    <div class="facts wrap"><div><small>District</small><strong>{place.data.district}</strong></div><div><small>Allow</small><strong>{place.data.duration}</strong></div><div><small>Best season</small><strong>{place.data.bestSeason}</strong></div></div>
+    <div class="body wrap"><aside><span>Highlights</span><ul>{place.data.highlights.map(item => <li>{item}</li>)}</ul><p>Practical details should be checked locally before travel.</p></aside><div class="prose"><p class="lead">{place.data.tagline}</p><Content /></div></div>
+    {place.data.sources.length > 0 && <section class="sources wrap"><p>Starting references</p><ul>{place.data.sources.map(source => <li><a href={source.url} target="_blank" rel="noreferrer">{source.label} ↗</a></li>)}</ul></section>}
+    <div class="next wrap"><a href="/places/">← Return to places</a><a href="/places/#weekend-journeys">Plan a journey →</a></div>
+  </article>
+</SiteLayout>
+<style>
+  .place-profile{padding-bottom:110px}.facts{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid rgba(20,44,39,.16)}.facts>div{padding:27px 22px;border-right:1px solid rgba(20,44,39,.16)}.facts>div:last-child{border-right:0}.facts small,.facts strong{display:block}.facts small,.body aside span{font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#a9432e}.facts strong{font:17px Georgia;font-weight:normal;margin-top:7px}.body{display:grid;grid-template-columns:210px minmax(0,680px);justify-content:center;gap:70px;padding-top:75px}.body aside ul{padding-left:18px;font-size:12px;line-height:1.8}.body aside p{font-size:11px;color:#69706b}.prose{font:19px/1.85 Georgia;color:#3e4b47}.lead{font-size:27px;color:#142c27}.sources{max-width:900px;border-top:1px solid rgba(20,44,39,.16);padding-top:25px;margin-top:60px}.next{margin-top:70px;background:#142c27;color:#f4eee2;padding:32px;display:flex;justify-content:space-between;font-size:9px;text-transform:uppercase;letter-spacing:.1em}@media(max-width:700px){.facts{grid-template-columns:1fr}.facts>div{border-right:0}.body{grid-template-columns:1fr;gap:30px;padding-top:50px}.next{flex-direction:column;gap:18px}}
+</style>

@@ -4,11 +4,23 @@ import FoodCard from '../../components/FoodCard.astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 
 const foods = await getCollection('foods');
+const combinations = (await getCollection('foodCombinations')).sort((a,b) => Number(b.data.featured) - Number(a.data.featured));
 const flagshipIds = ['litti-chokha','champaran-meat','dal-pitha','thekua','silao-khaja','gaya-tilkut'];
 const flagships = flagshipIds.map(id => foods.find(food => food.id === id)).filter(food => food !== undefined);
 const categories = ['Main dishes','Everyday table','Breads & snacks','Drinks','Sweets & festival foods'] as const;
 const extendedFoods = foods.filter(food => !flagshipIds.includes(food.id));
 const foodStory = (await getCollection('stories')).find(story => story.id === 'makhana-country');
+const sweetGroups = [
+  { title: 'Named for a place', note: 'Sweets whose identity travels with a town or region.', ids: ['silao-khaja','gaya-tilkut','maner-laddoo','barh-lai'] },
+  { title: 'Festival table', note: 'Preparations tied to offerings, seasons and celebration.', ids: ['thekua','anarsa','malpua','makhana-kheer'] },
+  { title: 'The halwai case', note: 'Layered, filled and syrup-finished sweets found across Bihar.', ids: ['balushahi','chandrakala','parwal-mithai'] },
+];
+const ritualFoods = [
+  ['Puja prasad','Offerings vary by observance, household and region—and should be documented with the people who prepare them.'],
+  ['Earthen-pot kheer','A preparation connected in some communities with Bhuiya Baba worship and the character of clay-pot cooking.'],
+  ['Batasha, murhi and chura','Simple combinations that hold ritual, seasonal and household meaning beyond their ingredients.'],
+  ['Food roasted over goitha','Guava, raw mango and other produce cooked over a traditional fire: technique, memory and flavour together.'],
+];
 ---
 <SiteLayout title="Food" description="Explore Bihar’s food through dishes, ingredients, seasons, regions and the people who sustain them." eyebrow="Food & Land" heading="A table with many stories." intro="Bihar does not have one cuisine. Explore dishes through their regions, seasons, techniques and living household variations.">
   <section class="food-intro"><div class="wrap intro-grid"><p>From the smoke held inside litti to the fine layers of Silao khaja, food in Bihar is a record of climate, movement, celebration and skilled hands.</p><div><span>{foods.length}</span><small>dishes in the growing atlas</small></div><a href={foodStory ? `/stories/${foodStory.id}/` : '/stories/'}>Read Makhana Country →</a></div></section>
@@ -16,6 +28,16 @@ const foodStory = (await getCollection('stories')).find(story => story.id === 'm
   <section class="flagship wrap">
     <div class="section-title"><div><p class="tag">Begin here</p><h2>Flagships of<br/><em>Bihar’s table.</em></h2></div><p>Six widely recognised dishes and sweets—each an invitation into a much larger regional food culture.</p></div>
     <div class="flagship-grid">{flagships.map((food,index) => <FoodCard food={food} index={index}/>)}</div>
+  </section>
+
+  <section class="pairings">
+    <div class="wrap section-title pairing-title"><div><p class="tag">Plates of Bihar</p><h2>Some foods are<br/><em>better together.</em></h2></div><p>These are not merely side dishes. Texture, heat, sourness and sweetness turn familiar preparations into a complete plate.</p></div>
+    <div class="wrap pairing-grid">{combinations.map((combination,index) => <article class={`pairing-card accent-${combination.data.accent}`}><span>{String(index+1).padStart(2,'0')}</span><p>{combination.data.occasion}</p><h3>{combination.data.title}</h3><div>{combination.data.items.map((item,i) => <>{item.foodId ? <a href={`/foods/${item.foodId}/`}>{item.label}</a> : <b>{item.label}</b>}{i < combination.data.items.length-1 && <i>+</i>}</>)}</div><small>{combination.data.summary}</small></article>)}</div>
+  </section>
+
+  <section class="sweets-guide">
+    <div class="wrap more-heading"><p class="tag">Sweets of Bihar</p><h2>One sweet map,<br/>many traditions.</h2><p>Explore sweets through place, festival and the craft of the halwai—not as one undifferentiated list.</p></div>
+    <div class="wrap sweet-groups">{sweetGroups.map((group,index) => <article><span>0{index+1}</span><h3>{group.title}</h3><p>{group.note}</p><div>{group.ids.map(id => { const food=foods.find(item => item.id === id); return food && <a href={`/foods/${food.id}/`}>{food.data.name} ↗</a>; })}</div></article>)}</div>
   </section>
 
   <section class="more-foods">
@@ -27,6 +49,8 @@ const foodStory = (await getCollection('stories')).find(story => story.id === 'm
       return <section class="compact-category" id={`category-${categoryIndex+1}`}><div class="wrap"><div class="category-title"><span>0{categoryIndex+1}</span><h3>{category}</h3><p>{items.length} entries</p></div><div class="compact-grid">{items.map(food => <a class={`compact-card accent-${food.data.accent}`} href={`/foods/${food.id}/`}><span class="compact-visual"><b>{food.data.localName?.slice(0,1) || 'ब'}</b></span><div class="compact-copy"><small>{food.data.region}</small><h4>{food.data.name}</h4><p>{food.data.season}</p></div><i>↗</i></a>)}</div></div></section>
     })}
   </section>
+
+  <section class="ritual-foods"><div class="wrap"><div class="section-title"><div><p class="tag">Food, faith & memory</p><h2>More than<br/><em>a recipe.</em></h2></div><p>Some preparations make sense only when the occasion, vessel, fire and people around them are part of the story.</p></div><div class="ritual-grid">{ritualFoods.map((item,index) => <article><span>0{index+1}</span><h3>{item[0]}</h3><p>{item[1]}</p></article>)}</div><div class="produce"><p>Ingredients & produce to explore</p><div><span>Makhana</span><span>Muzaffarpur litchi</span><span>Hajipur banana</span><span>Singhara</span><span>Barhal</span><span>Bel</span></div></div></div></section>
 
   <section class="variation"><div class="wrap"><p class="tag">An evolving atlas</p><h2>One name can hold<br/><em>many family recipes.</em></h2><p>Descriptions here are starting points, not declarations of a single “authentic” version. As the atlas grows, we will document regional names, household methods and the people who carry this knowledge.</p></div></section>
 </SiteLayout>
@@ -46,6 +70,8 @@ const foodStory = (await getCollection('stories')).find(story => story.id === 'm
   .compact-card h4{font:20px/1.05 Georgia;margin:6px 0 11px}
   .compact-card p{font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:#69706b;margin:0;padding-right:15px}
   .compact-card i{position:absolute;right:10px;bottom:9px;font-size:11px}
+  .pairings{padding:100px 0;background:#142c27;color:#f4eee2}.pairing-title{padding:0}.pairing-title>p{color:rgba(255,255,255,.62)}.pairing-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:rgba(255,255,255,.16)}.pairing-card{padding:25px;background:#142c27;min-height:280px;display:flex;flex-direction:column}.pairing-card>span{font-size:9px;color:#e9a93a}.pairing-card>p{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.58);margin:28px 0 8px}.pairing-card h3{font:27px/1.05 Georgia;margin:0 0 22px}.pairing-card>div{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:20px}.pairing-card a,.pairing-card b{font-size:9px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid rgba(255,255,255,.35)}.pairing-card b{font-weight:normal}.pairing-card i{font-style:normal;color:#e9a93a}.pairing-card small{color:rgba(255,255,255,.61);font-size:11px;line-height:1.55;margin-top:auto}.sweets-guide{padding:100px 0;background:#e6d8c1}.sweet-groups{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}.sweet-groups article{background:#fbf8f1;padding:28px}.sweet-groups article>span{color:#a9432e;font-size:9px}.sweet-groups h3{font:30px Georgia;margin:30px 0 8px}.sweet-groups p{font-size:12px;color:#69706b;min-height:58px}.sweet-groups article>div{display:grid;border-top:1px solid rgba(20,44,39,.16)}.sweet-groups a{padding:10px 0;border-bottom:1px solid rgba(20,44,39,.16);font-size:10px;text-transform:uppercase;letter-spacing:.08em}.ritual-foods{padding:100px 0;background:#fbf8f1}.ritual-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}.ritual-grid article{border-top:2px solid #142c27;padding-top:18px}.ritual-grid span{font-size:9px;color:#a9432e}.ritual-grid h3{font:25px Georgia;margin:35px 0 12px}.ritual-grid p{font-size:12px;color:#69706b}.produce{margin-top:75px;padding:30px;background:#f0eadd;display:grid;grid-template-columns:220px 1fr;gap:30px;align-items:center}.produce>p{font:22px Georgia;margin:0}.produce>div{display:flex;flex-wrap:wrap;gap:9px}.produce span{border:1px solid rgba(20,44,39,.2);border-radius:30px;padding:8px 13px;font-size:9px;text-transform:uppercase;letter-spacing:.08em}
   @media(max-width:1000px){.flagship-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.more-heading{grid-template-columns:1fr}.compact-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-  @media(max-width:700px){.intro-grid,.section-title{grid-template-columns:1fr;gap:28px}.flagship{padding:75px 0 90px}.flagship-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.more-foods{padding:70px 0}.more-heading h2{font-size:43px}.category-nav{margin-right:0}.category-title{grid-template-columns:32px 1fr}.category-title p{grid-column:2}.compact-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.compact-card h4{font-size:19px}.variation{padding:75px 0}}
+  @media(max-width:1000px){.pairing-grid,.ritual-grid{grid-template-columns:repeat(2,1fr)}.sweet-groups{grid-template-columns:1fr 1fr}}
+  @media(max-width:700px){.intro-grid,.section-title{grid-template-columns:1fr;gap:28px}.flagship{padding:75px 0 90px}.flagship-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.more-foods,.pairings,.sweets-guide,.ritual-foods{padding:70px 0}.more-heading h2{font-size:43px}.category-nav{margin-right:0}.category-title{grid-template-columns:32px 1fr}.category-title p{grid-column:2}.compact-grid,.pairing-grid,.sweet-groups,.ritual-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pairing-card{padding:18px;min-height:260px}.sweet-groups article{padding:20px}.sweet-groups p{min-height:0}.compact-card h4{font-size:19px}.produce{grid-template-columns:1fr}.variation{padding:75px 0}}
 </style>
