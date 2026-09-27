@@ -1,0 +1,7 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+const stories=[['People','The hands behind Madhubani','Meet the artists keeping an ancient visual language alive—and making it entirely their own.'],['History','Nalanda: a world of ideas','How one of the ancient world’s greatest centres of learning drew seekers across continents.'],['Food','More than litti chokha','A journey through silao khaja, tilkut, thekua and a generous cuisine shaped by the seasons.'],['Culture','Chhath at first light','Faith, water and community come together on the riverbank in Bihar’s most luminous tradition.'],['Ideas','The argument that changed India','Bihar’s long relationship with debate, dissent and democratic imagination.'],['Everyday Bihar','A river is never just a river','Life beside the Ganga: work, worship, memory and an ever-changing landscape.']];
+---
+<SiteLayout title="Stories" description="Stories about Bihar’s culture, history, food and everyday life." eyebrow="The journal" heading="Stories worth carrying." intro="Long reads, field notes and portraits that look beyond easy narratives to the Bihar people know, make and love.">
+  <section class="collection"><div class="wrap grid">{stories.map((s,i)=><article class="card"><span class="number">{String(i+1).padStart(2,'0')}</span><p class="tag">{s[0]}</p><h2>{s[1]}</h2><p>{s[2]}</p><a href="/about/">Coming soon →</a></article>)}</div></section>
+</SiteLayout>
