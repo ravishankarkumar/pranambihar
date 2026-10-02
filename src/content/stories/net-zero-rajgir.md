@@ -10,6 +10,8 @@ verifiedAt: 2026-09-27
 readTime: 5
 featured: false
 accent: indigo
+relatedPlaces: ["rajgir"]
+relatedEscapes: ["rajgir-nalanda"]
 sources:
   - label: "Nalanda University — Net-Zero Campus"
     url: "https://nalandauniv.edu.in/net-zero-campus/"

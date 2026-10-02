@@ -10,6 +10,8 @@ verifiedAt: 2026-09-27
 readTime: 5
 featured: true
 accent: gold
+relatedPlaces: ["rajgir", "nalanda"]
+relatedEscapes: ["rajgir-nalanda"]
 sources:
   - label: "Bihar Tourism — Rajgir"
     url: "https://tourism.bihar.gov.in/en/destinations/nalanda/rajgir"

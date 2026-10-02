@@ -10,6 +10,7 @@ verifiedAt: 2026-09-27
 readTime: 4
 featured: false
 accent: green
+relatedPeople: ["vashishtha-narayan-singh"]
 sources: []
 ---
 

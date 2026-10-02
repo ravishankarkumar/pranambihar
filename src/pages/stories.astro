@@ -3,26 +3,26 @@ import { getCollection } from 'astro:content';
 import StoryCard from '../components/StoryCard.astro';
 import SiteLayout from '../layouts/SiteLayout.astro';
 const stories = (await getCollection('stories')).sort((a,b) => Number(b.data.featured) - Number(a.data.featured) || b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
-const pillars = [['all','All stories'],['places','Places & Journeys'],['food','Food & Land'],['culture','Arts & Culture'],['people','People'],['history','History & Ideas'],['now','Bihar Now']];
+const formats = [['all','All stories'], ...[...new Set(stories.map(story => story.data.format))].map(format => [format.toLowerCase().replace(/[^a-z0-9]+/g, '-'), format])];
 ---
 <SiteLayout title="Stories" description="Reported stories about Bihar’s places, food, culture, people, history and future." eyebrow="The journal" heading="Stories worth carrying." intro="An expanding, sourced collection that connects Bihar’s inheritance with the people and possibilities shaping its future.">
   <section class="story-index">
     <div class="wrap">
-      <div class="filters" aria-label="Filter stories by pillar">{pillars.map(([key,label], i) => <button class:list={{active:i===0}} type="button" data-filter={key}>{label}</button>)}</div>
+      <div class="filters" aria-label="Filter stories by format">{formats.map(([key,label], i) => <button class:list={{active:i===0}} type="button" data-filter={key}>{label}</button>)}</div>
       <div class="story-grid">{stories.map((story,i) => <StoryCard story={story} index={i}/>)}</div>
       <p class="empty" hidden>No stories in this collection yet.</p>
     </div>
   </section>
   <script>
     const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
-    const cards = [...document.querySelectorAll<HTMLElement>('[data-pillar]')];
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-format]')];
     const empty = document.querySelector<HTMLElement>('.empty');
     buttons.forEach(button => button.addEventListener('click', () => {
       const filter = button.dataset.filter;
       buttons.forEach(item => item.classList.toggle('active', item === button));
       let visible = 0;
       cards.forEach(card => {
-        const show = filter === 'all' || card.dataset.pillar === filter;
+        const show = filter === 'all' || card.dataset.format === filter;
         card.hidden = !show;
         if (show) visible += 1;
       });

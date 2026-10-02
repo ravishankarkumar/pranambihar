@@ -1,8 +1,8 @@
 ---
 title: "Rohtas industrial memory"
 summary: "Work, neighbourhoods and family histories connected to an industrial world that has substantially changed."
-section: "before-it-fades"
-kind: "Before it fades"
+section: "living-memory"
+kind: "Living memory"
 season: "Oral-history project"
 region: "Rohtas"
 featured: true

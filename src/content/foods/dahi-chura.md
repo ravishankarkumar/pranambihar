@@ -8,6 +8,7 @@ season: "Winter and Makar Sankranti"
 vegetarian: true
 featured: false
 accent: blue
+relatedCulture: ["makar-sankranti"]
 sources:
   - label: "Bihar Tourism — Main course"
     url: "https://tourism.bihar.gov.in/en/experiences/food-and-cuisine/main-course"

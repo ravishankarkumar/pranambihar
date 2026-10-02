@@ -12,6 +12,15 @@ const { story } = Astro.props;
 const { Content } = await render(story);
 const published = story.data.publishedAt.toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
 const verified = story.data.verifiedAt.toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+const [places,foods,culture,people,history,escapes] = await Promise.all([getCollection('places'),getCollection('foods'),getCollection('culture'),getCollection('people'),getCollection('history'),getCollection('journeys')]);
+const related = [
+  ...story.data.relatedPlaces.map(id=>{const item=places.find(entry=>entry.id===id);return item&&{label:'Place',title:item.data.name,href:`/places/${item.id}/`};}),
+  ...story.data.relatedFoods.map(id=>{const item=foods.find(entry=>entry.id===id);return item&&{label:'Food',title:item.data.name,href:`/foods/${item.id}/`};}),
+  ...story.data.relatedCulture.map(id=>{const item=culture.find(entry=>entry.id===id);return item&&{label:'Culture',title:item.data.title,href:`/culture/${item.data.section}/${item.id}/`};}),
+  ...story.data.relatedPeople.map(id=>{const item=people.find(entry=>entry.id===id);return item&&{label:'Person',title:item.data.name,href:`/people/${item.id}/`};}),
+  ...story.data.relatedHistory.map(id=>{const item=history.find(entry=>entry.id===id);return item&&{label:'History',title:item.data.title,href:`/history/${item.id}/`};}),
+  ...story.data.relatedEscapes.map(id=>{const item=escapes.find(entry=>entry.id===id);return item&&{label:'Escape',title:item.data.title,href:`/escapes/${item.id}/`};}),
+].filter(Boolean) as {label:string;title:string;href:string}[];
 ---
 <SiteLayout title={story.data.title} description={story.data.dek} eyebrow={`${story.data.pillarLabel} · ${story.data.format}`} heading={story.data.title} intro={story.data.dek}>
   <article class="article-shell">
@@ -20,10 +29,12 @@ const verified = story.data.verifiedAt.toLocaleDateString('en-IN', { day:'numeri
       <aside><p class="label">Filed under</p><a href="/stories/">{story.data.pillarLabel}</a><p class="verified">Facts last reviewed<br/><strong>{verified}</strong></p></aside>
       <div class="article-body"><Content /></div>
     </div>
+    {related.length>0&&<section class="related wrap"><p class="label">Connected subjects</p><div>{related.map(item=><a href={item.href}><small>{item.label}</small><strong>{item.title}</strong><span>↗</span></a>)}</div></section>}
     {story.data.sources.length > 0 && <section class="sources wrap"><p class="label">Sources & further reading</p><ol>{story.data.sources.map(source => <li><a href={source.url} rel="noreferrer" target="_blank">{source.label} ↗</a></li>)}</ol></section>}
     <div class="next wrap"><p>Continue exploring Bihar through place, memory and possibility.</p><a href="/stories/">All stories →</a></div>
   </article>
 </SiteLayout>
 <style>
   .article-shell{padding-bottom:120px}.article-meta{display:flex;gap:28px;padding-top:28px;padding-bottom:28px;border-bottom:1px solid rgba(20,44,39,.16);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#69706b}.article-layout{display:grid;grid-template-columns:180px minmax(0,680px);gap:70px;justify-content:center;padding-top:75px}.article-layout aside{font-size:12px}.label{text-transform:uppercase;letter-spacing:.15em;font:9px Arial;color:#a9432e;font-weight:bold}.article-layout aside a{font:18px Georgia;border-bottom:1px solid}.verified{margin-top:45px;color:#69706b;line-height:1.7}.verified strong{color:#142c27;font-weight:normal}.article-body{font:19px/1.85 Georgia;color:#3e4b47}.article-body :global(p:first-child){font-size:25px;line-height:1.6;color:#142c27}.article-body :global(h2){font:42px/1.1 Georgia;color:#142c27;margin:60px 0 18px}.article-body :global(ul){padding-left:20px}.article-body :global(li){margin:10px 0}.sources{max-width:900px;margin-top:75px;padding-top:30px;border-top:1px solid rgba(20,44,39,.16)}.sources ol{padding-left:18px}.sources a{border-bottom:1px solid;font-size:14px}.next{margin-top:80px;background:#142c27;color:#f4eee2;padding:45px;display:flex;justify-content:space-between;align-items:center}.next p{font:24px Georgia;margin:0}.next a{font-size:10px;text-transform:uppercase;letter-spacing:.12em}@media(max-width:760px){.article-meta{overflow:auto;white-space:nowrap}.article-layout{grid-template-columns:1fr;gap:35px;padding-top:50px}.article-layout aside{display:flex;justify-content:space-between;align-items:start;border-bottom:1px solid rgba(20,44,39,.16);padding-bottom:25px}.verified{margin:0}.article-body{font-size:18px}.article-body :global(p:first-child){font-size:22px}.article-body :global(h2){font-size:34px}.next{margin-left:24px;margin-right:24px;flex-direction:column;align-items:flex-start;gap:25px}}
+  .related{margin-top:75px;padding-top:30px;border-top:1px solid rgba(20,44,39,.16)}.related>div{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.related a{background:#fff;padding:18px;display:grid;grid-template-columns:1fr auto}.related small{grid-column:1/-1;font-size:8px;text-transform:uppercase;color:#a9432e}.related strong{font:20px Georgia}.related span{align-self:center}@media(max-width:700px){.related>div{grid-template-columns:1fr}}
 </style>

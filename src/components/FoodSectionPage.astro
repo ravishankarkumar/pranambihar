@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FoodCard from './FoodCard.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+interface Group {
+  eyebrow: string;
+  title: string;
+  intro: string;
+  items: CollectionEntry<'foods'>[];
+}
+interface Props {
+  title: string;
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  note: string;
+  groups: Group[];
+}
+const { title, eyebrow, heading, intro, note, groups } = Astro.props;
+const total = groups.reduce((count,group) => count + group.items.length, 0);
+---
+<SiteLayout title={title} description={intro} eyebrow={eyebrow} heading={heading} intro={intro} compactHero={true}>
+  <nav class="crumb wrap" aria-label="Breadcrumb"><a href="/foods/">Food</a><span>→</span><b>{title}</b></nav>
+  <section class="collection-intro wrap"><div><span>{total}</span><small>{total === 1 ? 'entry' : 'entries'} in this collection</small></div><p>{note}</p></section>
+  <div class="groups">{groups.map(group => <section class="food-group"><div class="wrap"><header><div><p class="tag">{group.eyebrow}</p><h2>{group.title}</h2></div><p>{group.intro}</p></header><div class="food-grid">{group.items.map((food,index) => <FoodCard food={food} index={index}/>)}</div></div></section>)}</div>
+  <section class="food-next"><div class="wrap"><div><p class="tag">Keep exploring</p><h2>There is more<br/><em>around the table.</em></h2></div><nav><a href="/foods/snacks/">Snacks <span>↗</span></a><a href="/foods/combinations/">Combinations <span>↗</span></a><a href="/foods/prasad/">Prasad <span>↗</span></a><a href="/foods/fruits/">Fruits <span>↗</span></a></nav></div></section>
+</SiteLayout>
+<style>
+  .crumb{display:flex;gap:12px;padding-top:18px;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#69706b}.crumb a{border-bottom:1px solid}.crumb b{color:#142c27}.collection-intro{display:grid;grid-template-columns:260px 1fr;gap:80px;align-items:center;padding-top:60px;padding-bottom:65px}.collection-intro>div{display:flex;align-items:center;gap:15px}.collection-intro span{font:60px Georgia;color:#a9432e}.collection-intro small{max-width:120px;text-transform:uppercase;letter-spacing:.1em}.collection-intro>p{font:21px/1.55 Georgia;margin:0}.food-group{padding:85px 0}.food-group:nth-child(odd){background:#f0eadd}.food-group header{display:grid;grid-template-columns:1fr 380px;gap:70px;align-items:end;margin-bottom:38px}.food-group h2{font:clamp(42px,5vw,66px)/1 Georgia;margin:12px 0 0}.food-group header>p{color:#69706b;margin:0}.food-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}.food-next{padding:85px 0;background:#e6d8c1}.food-next>div{display:grid;grid-template-columns:1fr 1fr;gap:75px;align-items:end}.food-next h2{font:clamp(42px,5vw,65px)/1 Georgia;margin:12px 0 0}.food-next h2 em{font-weight:normal;color:#a9432e}.food-next nav{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(20,44,39,.17)}.food-next a{display:flex;justify-content:space-between;padding:15px 5px;border-bottom:1px solid rgba(20,44,39,.17);font:20px Georgia}.food-next a:nth-child(odd){margin-right:25px}@media(max-width:950px){.food-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:700px){.collection-intro,.food-group header,.food-next>div{grid-template-columns:1fr;gap:25px}.food-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.food-group{padding:65px 0}.food-next nav{grid-template-columns:1fr}.food-next a:nth-child(odd){margin-right:0}}@media(max-width:460px){.food-grid{grid-template-columns:1fr}}
+</style>

@@ -1,0 +1,16 @@
+---
+import { getCollection } from 'astro:content';
+import FoodSectionPage from '../../../components/FoodSectionPage.astro';
+
+const foods = await getCollection('foods');
+const byIds = (ids:string[]) => ids.map(id => foods.find(food => food.id === id)).filter((food): food is NonNullable<typeof food> => food !== undefined);
+const mainOrder = ['litti-chokha','champaran-meat','dal-pitha','bihari-fish-curry','kadhi-badi'];
+const everydayOrder = ['bihari-khichdi','dahi-chura','tarua','sattu-paratha','dalpuri','chana-ghugni','bihari-chaat'];
+const listed = new Set([...mainOrder,...everydayOrder]);
+const remaining = foods.filter(food => !listed.has(food.id) && ['Main dishes','Everyday table','Breads & snacks'].includes(food.data.category)).sort((a,b) => a.data.name.localeCompare(b.data.name));
+const groups = [
+  { eyebrow:'Complete plates & centrepieces', title:'Dishes that anchor the table.', intro:'Meals shaped by grain, pulse, vegetable, river and slow cooking—some recognised everywhere, others tied closely to a region.', items:byIds(mainOrder) },
+  { eyebrow:'Everyday and portable', title:'The food between ordinary days.', intro:'Breakfasts, breads, seasonal vegetables and dependable preparations that carry Bihar beyond a list of famous dishes.', items:[...byIds(everydayOrder),...remaining] },
+];
+---
+<FoodSectionPage title="Dishes" eyebrow="Food · Dishes" heading="Bihar, served as a meal." intro="Explore Bihar’s main dishes, everyday preparations and breads through region, technique, season and the combinations that complete them." note="A dish is never only an ingredient list. Its accompaniments, occasion and place at the table help explain what it means." groups={groups}/>

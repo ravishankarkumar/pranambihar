@@ -8,6 +8,7 @@ season: "All year"
 vegetarian: true
 featured: false
 accent: blue
+relatedCulture: ["makar-sankranti"]
 sources:
   - label: "Government of Bihar — Cuisine of Bihar"
     url: "https://betastate.bihar.gov.in/iprdwebsite/Cuisineofbihar"

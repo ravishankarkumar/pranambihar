@@ -8,6 +8,7 @@ season: "Winter"
 vegetarian: true
 featured: true
 accent: red
+relatedCulture: ["makar-sankranti"]
 sources:
   - label: "Bihari cuisine — overview and references"
     url: "https://en.wikipedia.org/wiki/Bihari_cuisine"

@@ -10,6 +10,7 @@ verifiedAt: 2026-09-27
 readTime: 6
 featured: true
 accent: blue
+relatedFoods: ["makhana-kheer"]
 sources:
   - label: "APEDA — Indian Makhana Industry"
     url: "https://apeda.gov.in/sites/default/files/study_reports/Makhana_Report_English.pdf"

@@ -1,0 +1,32 @@
+---
+import CultureSectionPage from '../../../components/CultureSectionPage.astro';
+
+export function getStaticPaths() {
+  const sections = {
+    festivals: {
+      title:'Festivals',
+      eyebrow:'The year in motion',
+      heading:'Festivals with a before and after.',
+      intro:'Preparation, food, music, work and public space—not only the most photographed moment.',
+      note:'Festival coverage recognises regional differences and the people whose labour makes each observance possible.',
+      entryGroupLabels: {
+        featuredEyebrow:'Festivals in focus',
+        featuredTitle:'Three celebrations. Their own space.',
+        featuredIntro:'Chhath, Diwali and Dussehra shape distinct rituals, memories and public worlds across Bihar. Each deserves to be explored in depth.',
+        otherEyebrow:'Across the calendar',
+        otherTitle:'Bihar’s festive year',
+        otherIntro:'Seasonal food, pilgrimage, song and regional observance keep the calendar moving long before and after its most visible days.',
+      },
+      entryOrder:['chhath','diwali','dussehra','dussehra-to-chhath','janmashtami','makar-sankranti','holi','sama-chakeva','bol-bam','garibnath-shravan'],
+    },
+    'art-craft': { title:'Art & Craft', eyebrow:'Made in Bihar', heading:'Every line has a maker.', intro:'Painting, grass and material traditions understood through technique, authorship and changing livelihoods.', note:'The maker’s name, regional practice and working conditions matter as much as the finished object.' },
+    textiles: { title:'Textiles', eyebrow:'Cloth, stitch & loom', heading:'Bihar, woven and worn.', intro:'Silk, cotton, embroidery, appliqué and painted cloth understood through the people and places that make them.', note:'Traditional techniques and contemporary applications belong together here—but their histories should not be collapsed into one another.' },
+    'music-performance': { title:'Music & Performance', eyebrow:'Voice and movement', heading:'The stage begins everywhere.', intro:'Dance, theatre and song traditions shaped by weddings, seasons, migration, devotion and public life.', note:'Performance changes with its performers and audiences. These entries centre context rather than presenting fixed folklore.' },
+    traditions: { title:'Traditions', eyebrow:'Knowledge in the hands', heading:'Culture is something people do.', intro:'Cooking methods, ritual and household knowledge carried through practice.', note:'These entries grow through conversations with practitioners and careful documentation of regional and household variation.' },
+    'living-memory': { title:'Living Memory', eyebrow:'The present becoming history', heading:'What Bihar remembers—and carries forward.', intro:'Stories of places, practices and working lives being remembered, adapted and carried forward.', note:'“Before It Fades” continues here as an editorial series within a wider account of memory, adaptation and change.' },
+  } as const;
+  return Object.entries(sections).map(([section, data]) => ({ params:{ section }, props:{ section, ...data } }));
+}
+const props = Astro.props;
+---
+<CultureSectionPage {...props} />
