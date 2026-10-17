@@ -10,6 +10,8 @@ verifiedAt: 2026-09-27
 readTime: 5
 featured: true
 accent: red
+relatedCulture: ["madhubani-painting"]
+relatedPeople: ["sita-devi"]
 sources:
   - label: "National Crafts Museum — Indian craft collections"
     url: "https://nationalcraftsmuseum.nic.in/"

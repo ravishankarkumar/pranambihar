@@ -15,7 +15,7 @@ const { Content } = await render(place);
     <div class="facts wrap"><div><small>District</small><strong>{place.data.district}</strong></div><div><small>Allow</small><strong>{place.data.duration}</strong></div><div><small>Best season</small><strong>{place.data.bestSeason}</strong></div></div>
     <div class="body wrap"><aside><span>Highlights</span><ul>{place.data.highlights.map(item => <li>{item}</li>)}</ul><p>Practical details should be checked locally before travel.</p></aside><div class="prose"><p class="lead">{place.data.tagline}</p><Content /></div></div>
     {place.data.sources.length > 0 && <section class="sources wrap"><p>Starting references</p><ul>{place.data.sources.map(source => <li><a href={source.url} target="_blank" rel="noreferrer">{source.label} ↗</a></li>)}</ul></section>}
-    <div class="next wrap"><a href="/places/">← Return to places</a><a href="/places/#weekend-journeys">Plan a journey →</a></div>
+    <div class="next wrap"><a href="/places/">← Return to places</a><a href="/escapes/">Find an escape →</a></div>
   </article>
 </SiteLayout>
 <style>

@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+const escapes = (await getCollection('journeys')).sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.title.localeCompare(b.data.title));
+const places = await getCollection('places');
+const placeById = new Map(places.map(place => [place.id, place]));
+const token = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+---
+
+<SiteLayout title="Escapes" description="Day trips, weekend journeys and thoughtfully planned routes across Bihar." eyebrow="Take the road out" heading="Bihar escapes." intro="Ready-made ideas for a day away, a slow weekend or a road trip through Bihar—built around time, mood and the stories connecting each stop.">
+  <section class="escape-intro">
+    <div class="wrap">
+      <p>Places tell you <em>where</em> to go. Escapes help you decide <em>how</em> to experience them.</p>
+      <div><strong>{escapes.length}</strong><span>routes to begin with</span></div>
+    </div>
+  </section>
+
+  <div class="mood-strip wrap" aria-label="Filter escapes">
+    <b>Find your mood</b><button class="active" type="button" data-filter="all">All</button><button type="button" data-filter="1-day">One day</button><button type="button" data-filter="2-days">Two days</button><button type="button" data-filter="history">History</button><button type="button" data-filter="nature">Nature</button><button type="button" data-filter="road-trip">Road trip</button><button type="button" data-filter="patna">From Patna</button>
+  </div>
+
+  <section class="escape-list wrap" id="all-escapes">
+    <div class="heading"><div><p class="tag">Choose your escape</p><h2>Less planning.<br/><em>More Bihar.</em></h2></div><p>Every guide begins with a workable route and clear expectations. Timings, access and local advice should always be confirmed before leaving.</p></div>
+    <div class="escape-grid">
+      {escapes.map((escape, index) => {
+        const stops = escape.data.stops.map(id => placeById.get(id)).filter(Boolean);
+        const filters = [escape.data.duration, escape.data.startFrom, ...escape.data.bestFor, ...escape.data.idealGroup].map(token).join(' ');
+        return <a class={`escape-card accent-${escape.data.accent}`} data-search={filters} href={`/escapes/${escape.id}/`}>
+          <div class="card-top"><span>{String(index + 1).padStart(2, '0')}</span><small>START FROM<br/><b>{escape.data.startFrom}</b></small></div>
+          <div class="symbol">{escape.data.duration === '1 day' ? '☀' : '↗'}</div>
+          <h3>{escape.data.title}</h3>
+          <p>{escape.data.summary}</p>
+          <div class="route">{stops.map((stop, i) => <>{i > 0 && <i>→</i>}<span>{stop?.data.name}</span></>)}</div>
+          <div class="card-meta"><b>{escape.data.duration}</b><span>{escape.data.bestFor.slice(0, 2).join(' · ')}</span><i>Open guide ↗</i></div>
+        </a>;
+      })}
+    </div><p class="empty" hidden>No escape currently matches that filter.</p>
+  </section>
+
+  <section class="promise"><div class="wrap"><p class="tag">How to use these guides</p><blockquote>Pick the feeling first. We’ll help with the route.</blockquote><div class="promise-grid"><p><b>01 · Choose</b><span>Start with your available time, starting city and the kind of day you want.</span></p><p><b>02 · Shape</b><span>Use the route as a foundation—not a checklist that must be rushed through.</span></p><p><b>03 · Confirm</b><span>Check weather, transport, opening times and local safety advice before departure.</span></p></div></div></section>
+</SiteLayout>
+
+<script>
+  const filterButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  const escapeCards = [...document.querySelectorAll<HTMLElement>('[data-search]')];
+  const empty = document.querySelector<HTMLElement>('.empty');
+  filterButtons.forEach(button => button.addEventListener('click', () => {
+    const filter = button.dataset.filter || 'all';
+    filterButtons.forEach(item => item.classList.toggle('active', item === button));
+    let visible = 0;
+    escapeCards.forEach(card => { const show = filter === 'all' || (card.dataset.search || '').includes(filter); card.hidden = !show; if (show) visible += 1; });
+    if (empty) empty.hidden = visible > 0;
+  }));
+</script>
+
+<style>
+  .escape-intro{background:#142c27;color:#f4eee2;padding:48px 0}.escape-intro>div{display:grid;grid-template-columns:1.4fr .6fr;gap:60px;align-items:center}.escape-intro p{font:24px/1.5 Georgia;margin:0;max-width:700px}.escape-intro em{color:#e9a93a}.escape-intro>div>div{display:flex;align-items:center;gap:16px}.escape-intro strong{font:54px Georgia;color:#e9a93a}.escape-intro span{text-transform:uppercase;font-size:9px;line-height:1.4;letter-spacing:.12em}.mood-strip{display:flex;align-items:center;gap:10px;padding-top:35px;overflow:auto}.mood-strip b,.mood-strip span{text-transform:uppercase;white-space:nowrap;font-size:9px;letter-spacing:.1em}.mood-strip b{color:#a9432e;margin-right:8px}.mood-strip span{padding:9px 14px;border:1px solid rgba(20,44,39,.22);border-radius:30px}.escape-list{padding-top:85px;padding-bottom:125px}.heading{display:grid;grid-template-columns:1fr 390px;gap:60px;align-items:end;margin-bottom:50px}.heading h2{font:clamp(48px,5.5vw,76px)/.98 Georgia;margin:14px 0 0}.heading h2 em{color:#e0a33c;font-weight:normal}.heading>p{color:#69706b}.escape-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.escape-card{background:#fff;border-top:6px solid var(--escape-color);padding:30px;min-height:440px;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s}.escape-card:hover{transform:translateY(-5px);box-shadow:0 18px 42px rgba(20,44,39,.09)}.card-top{display:flex;justify-content:space-between;align-items:start}.card-top>span{font:32px Georgia;color:var(--escape-color)}.card-top small{text-align:right;text-transform:uppercase;font-size:8px;line-height:1.6;letter-spacing:.09em;color:#a9432e}.card-top b{font-weight:normal;color:#142c27}.symbol{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;margin-top:25px;background:var(--escape-color);color:#fff;font-size:22px}.escape-card h3{font:37px/1.07 Georgia;margin:20px 0 12px}.escape-card>p{color:#69706b;font-size:13px;max-width:480px}.route{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0 30px;font:16px Georgia}.route i{font:normal 13px Arial;color:#a9432e}.card-meta{margin-top:auto;padding-top:18px;border-top:1px solid rgba(20,44,39,.16);display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:18px;align-items:start;text-transform:uppercase;font-size:8px;line-height:1.45;letter-spacing:.08em}.card-meta>span{color:#69706b;overflow-wrap:anywhere}.card-meta>i{font-style:normal;white-space:nowrap}.promise{padding:100px 0;background:#e6d8c1}.promise blockquote{font:clamp(38px,5vw,65px)/1.05 Georgia;margin:16px 0 55px;max-width:760px}.promise-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:45px;border-top:1px solid rgba(20,44,39,.2);padding-top:30px}.promise-grid p{display:grid;gap:12px}.promise-grid b{text-transform:uppercase;font-size:9px;letter-spacing:.12em;color:#a9432e}.promise-grid span{color:#69706b;font-size:13px}.accent-gold{--escape-color:#b9892d}.accent-blue{--escape-color:#66888a}.accent-red{--escape-color:#a94e39}.accent-green{--escape-color:#70876d}.accent-clay{--escape-color:#b87550}.accent-indigo{--escape-color:#475b72}
+  .mood-strip b,.mood-strip button{text-transform:uppercase;white-space:nowrap;font-size:9px;letter-spacing:.1em}.mood-strip button{padding:9px 14px;border:1px solid rgba(20,44,39,.22);border-radius:30px;background:transparent;color:#142c27;cursor:pointer}.mood-strip button.active,.mood-strip button:hover{background:#142c27;color:#f4eee2}.escape-card[hidden]{display:none}.empty{text-align:center;color:#69706b;padding:65px 0}
+  @media(max-width:700px){.escape-intro>div,.heading{grid-template-columns:1fr;gap:28px}.mood-strip{margin-right:0}.escape-list{padding-top:65px;padding-bottom:80px}.escape-grid,.promise-grid{grid-template-columns:1fr}.escape-card{min-height:400px;padding:24px}.escape-card h3{font-size:31px}.card-meta{grid-template-columns:1fr auto}.card-meta>span{grid-row:2}.promise{padding:75px 0}.promise-grid{gap:18px}.promise-grid p{border-bottom:1px solid rgba(20,44,39,.16);padding-bottom:20px}}
+</style>

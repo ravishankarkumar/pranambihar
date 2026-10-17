@@ -8,6 +8,7 @@ season: "All year; especially winter"
 vegetarian: true
 featured: false
 accent: gold
+relatedCulture: ["makar-sankranti"]
 sources:
   - label: "Bihar Tourism — Khichdi"
     url: "https://tourism.bihar.gov.in/en/experiences/food-and-cuisine/main-course/khichdi"

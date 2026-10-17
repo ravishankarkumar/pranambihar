@@ -1,0 +1,11 @@
+---
+import { getCollection } from 'astro:content';
+import FoodSectionPage from '../../../components/FoodSectionPage.astro';
+
+const foods = await getCollection('foods');
+const drinks = foods.filter(food => food.data.category === 'Drinks').sort((a,b) => a.data.name.localeCompare(b.data.name));
+const groups = [
+  { eyebrow:'Summer knowledge', title:'Cooling Bihar.', intro:'Fruit, roasted grain, water and household judgment become drinks designed for heat, refreshment and nourishment.', items:drinks },
+];
+---
+<FoodSectionPage title="Drinks" eyebrow="Food · Drinks" heading="What Bihar pours." intro="Begin with bel and sattu sharbat, then follow a growing collection of seasonal drinks and the household knowledge behind them." note="A drink’s thickness, sweetness, salt and spice are adjusted by taste. Those variations belong in the atlas rather than being flattened into one recipe." groups={groups}/>

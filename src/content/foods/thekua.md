@@ -8,6 +8,7 @@ season: "Chhath and celebrations"
 vegetarian: true
 featured: true
 accent: clay
+relatedCulture: ["chhath"]
 sources:
   - label: "Bihari cuisine — overview and references"
     url: "https://en.wikipedia.org/wiki/Bihari_cuisine"

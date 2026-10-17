@@ -5,7 +5,7 @@ section: "festivals"
 kind: "Festival"
 season: "Shravan"
 region: "Pilgrimage routes across Bihar"
-featured: true
+featured: false
 accent: "clay"
 ---
 

@@ -10,6 +10,8 @@ verifiedAt: 2026-09-27
 readTime: 6
 featured: false
 accent: clay
+relatedPlaces: ["nalanda"]
+relatedHistory: ["nalanda-mahavihara"]
 sources:
   - label: "UNESCO — Archaeological Site of Nalanda Mahavihara"
     url: "https://whc.unesco.org/en/list/1502/"

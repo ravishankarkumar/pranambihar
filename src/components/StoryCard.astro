@@ -3,8 +3,9 @@ import type { CollectionEntry } from 'astro:content';
 interface Props { story: CollectionEntry<'stories'>; index?: number; }
 const { story, index = 0 } = Astro.props;
 const date = story.data.publishedAt.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+const formatKey = story.data.format.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 ---
-<article class={`story-card accent-${story.data.accent}`} data-pillar={story.data.pillar}>
+<article class={`story-card accent-${story.data.accent}`} data-pillar={story.data.pillar} data-format={formatKey}>
   <a class="art" href={`/stories/${story.id}/`} aria-label={`Read ${story.data.title}`}><span>{String(index + 1).padStart(2, '0')}</span><b>{story.data.pillarLabel.split(' ')[0]}</b></a>
   <div class="body">
     <p class="meta">{story.data.pillarLabel} · {story.data.format}</p>

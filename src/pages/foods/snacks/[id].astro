@@ -1,0 +1,25 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+
+export async function getStaticPaths() {
+  const snacks = await getCollection('snacks');
+  return snacks.map(snack => ({ params:{ id:snack.id }, props:{ snack } }));
+}
+
+interface Props { snack: CollectionEntry<'snacks'>; }
+const { snack } = Astro.props;
+const { Content } = await render(snack);
+---
+<SiteLayout title={snack.data.title} description={snack.data.summary} eyebrow={`Snack · ${snack.data.type}`} heading={snack.data.title} intro={snack.data.summary} compactHero={true}>
+  <article class="snack-profile">
+    <nav class="crumb wrap" aria-label="Breadcrumb"><a href="/foods/">Food</a><span>→</span><a href="/foods/snacks/">Snacks</a><span>→</span><b>{snack.data.title}</b></nav>
+    <div class="facts wrap"><div><small>Moment</small><strong>{snack.data.moment}</strong></div><div><small>Region</small><strong>{snack.data.region}</strong></div><div><small>Kind</small><strong>{snack.data.type}</strong></div><div><small>Table</small><strong>{snack.data.vegetarian ? 'Vegetarian' : 'Contains egg or meat'}</strong></div></div>
+    <div class="body wrap"><aside><span>On the plate</span><ul>{snack.data.items.map(item => <li>{item}</li>)}</ul></aside><div class="prose"><Content /></div></div>
+    {snack.data.sources.length > 0 && <section class="sources wrap"><p>Starting references</p><ul>{snack.data.sources.map(source => <li><a href={source.url} target="_blank" rel="noreferrer">{source.label} ↗</a></li>)}</ul></section>}
+    <div class="next wrap"><a href="/foods/snacks/">← Return to Snacks</a><a href="/foods/">Explore the food atlas →</a></div>
+  </article>
+</SiteLayout>
+<style>
+  .snack-profile{padding-bottom:110px}.crumb{display:flex;flex-wrap:wrap;gap:10px;padding-top:22px;font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:#69706b}.crumb a{border-bottom:1px solid}.crumb b{color:#142c27}.facts{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(20,44,39,.16);margin-top:22px}.facts>div{padding:27px 22px;border-right:1px solid rgba(20,44,39,.16)}.facts>div:last-child{border-right:0}.facts small,.facts strong{display:block}.facts small,.body aside span{font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#a9432e}.facts strong{font:17px Georgia;font-weight:normal;margin-top:7px}.body{display:grid;grid-template-columns:210px minmax(0,680px);justify-content:center;gap:70px;padding-top:75px}.body aside ul{list-style:none;padding:0;margin:18px 0}.body aside li{font-size:11px;padding:9px 0;border-bottom:1px solid rgba(20,44,39,.14)}.prose{font:19px/1.85 Georgia;color:#3e4b47}.prose :global(p:first-child){font-size:27px;color:#142c27}.prose :global(h2){font:38px/1.15 Georgia;color:#142c27;margin:52px 0 16px}.sources{max-width:900px;margin-top:60px;border-top:1px solid rgba(20,44,39,.16);padding-top:25px}.sources>p{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#a9432e}.sources ul{padding:0;list-style:none}.sources a{font-size:12px;border-bottom:1px solid}.next{margin-top:70px;background:#142c27;color:#f4eee2;padding:32px;display:flex;justify-content:space-between;font-size:9px;text-transform:uppercase;letter-spacing:.1em}@media(max-width:700px){.facts{grid-template-columns:1fr 1fr}.facts>div:nth-child(2n){border-right:0}.body{grid-template-columns:1fr;gap:30px;padding-top:50px}.next{flex-direction:column;gap:18px}}
+</style>

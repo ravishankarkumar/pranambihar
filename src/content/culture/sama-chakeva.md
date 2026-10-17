@@ -6,7 +6,7 @@ section: "festivals"
 kind: "Festival"
 season: "Kartik"
 region: "Mithila"
-featured: true
+featured: false
 accent: "blue"
 ---
 

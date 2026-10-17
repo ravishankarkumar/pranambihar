@@ -1,7 +1,0 @@
----
-import SiteLayout from '../layouts/SiteLayout.astro';
-const people=[['Mathematics','Vashishtha Narayan Singh','A careful portrait of achievement, illness and the responsibility of public memory.','/stories/remembering-vashishtha/'],['Human resolve','Dashrath Manjhi','The person, the landscape and the road beyond the familiar legend.','/stories/'],['Art','Sita Devi','Artistic authorship and the journey of Mithila painting into the wider world.','/stories/mithila-lines/'],['Poetry','Vidyapati','A poet whose words have travelled for centuries through languages and songs.','/stories/'],['Everyday expertise','Teachers of Bihar','Educators and the institutions they quietly transform.','/stories/'],['Enterprise','The next generation','Builders, researchers, artists and entrepreneurs creating Bihar’s newest stories.','/stories/']];
----
-<SiteLayout title="People" description="Meet remarkable people from Bihar, past and present." eyebrow="Made in Bihar" heading="People who showed the way." intro="Lives marked by imagination, persistence and service—remembered not as distant legends, but as proof of what is possible.">
-  <section class="collection"><div class="wrap grid">{people.map((p,i)=><article class="card"><span class="number">{String(i+1).padStart(2,'0')}</span><p class="tag">{p[0]}</p><h2>{p[1]}</h2><p>{p[2]}</p><a href={p[3]}>Explore profile →</a></article>)}</div></section>
-</SiteLayout>

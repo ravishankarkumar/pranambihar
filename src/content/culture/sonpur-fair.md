@@ -1,8 +1,8 @@
 ---
 title: "Sonpur fair in transition"
 summary: "A historic gathering changing with regulation, commerce, entertainment and new expectations."
-section: "before-it-fades"
-kind: "Before it fades"
+section: "living-memory"
+kind: "Living memory"
 season: "Kartik"
 region: "Sonpur"
 featured: true

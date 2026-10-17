@@ -1,0 +1,25 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+
+export async function getStaticPaths() {
+  const fruits = await getCollection('fruits');
+  return fruits.map(fruit => ({ params:{ id:fruit.id }, props:{ fruit } }));
+}
+
+interface Props { fruit: CollectionEntry<'fruits'>; }
+const { fruit } = Astro.props;
+const { Content } = await render(fruit);
+---
+<SiteLayout title={fruit.data.name} description={fruit.data.summary} eyebrow={`Fruit & orchard · ${fruit.data.identity}`} heading={fruit.data.name} intro={fruit.data.summary} compactHero={true}>
+  <article class="fruit-profile">
+    <nav class="crumb wrap" aria-label="Breadcrumb"><a href="/foods/">Food</a><span>→</span><a href="/foods/fruits/">Fruits</a><span>→</span><b>{fruit.data.name}</b></nav>
+    <div class="facts wrap"><div><small>Season</small><strong>{fruit.data.season}</strong></div><div><small>Region</small><strong>{fruit.data.region}</strong></div><div><small>Identity</small><strong>{fruit.data.identity}</strong></div>{fruit.data.localName && <div><small>Also written</small><strong>{fruit.data.localName}</strong></div>}</div>
+    <div class="body wrap"><aside><span>Fruit & orchard</span><p>Variety, season, soil, growers and market routes are all part of the taste. This atlas keeps those connections visible.</p></aside><div class="prose"><Content /></div></div>
+    {fruit.data.sources.length > 0 && <section class="sources wrap"><p>Starting references</p><ul>{fruit.data.sources.map(source => <li><a href={source.url} target="_blank" rel="noreferrer">{source.label} ↗</a></li>)}</ul></section>}
+    <div class="next wrap"><a href="/foods/fruits/">← Return to Fruits</a><a href="/foods/">Explore the food atlas →</a></div>
+  </article>
+</SiteLayout>
+<style>
+  .fruit-profile{padding-bottom:110px}.crumb{display:flex;flex-wrap:wrap;gap:10px;padding-top:22px;font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:#69706b}.crumb a{border-bottom:1px solid}.crumb b{color:#142c27}.facts{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(20,44,39,.16);margin-top:22px}.facts>div{padding:27px 22px;border-right:1px solid rgba(20,44,39,.16)}.facts>div:last-child{border-right:0}.facts small,.facts strong{display:block}.facts small,.body aside span{font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:#a9432e}.facts strong{font:17px Georgia;font-weight:normal;margin-top:7px}.body{display:grid;grid-template-columns:210px minmax(0,680px);justify-content:center;gap:70px;padding-top:75px}.body aside p{font-size:12px;color:#69706b}.prose{font:19px/1.85 Georgia;color:#3e4b47}.prose :global(p:first-child){font-size:27px;color:#142c27}.sources{max-width:900px;margin-top:60px;border-top:1px solid rgba(20,44,39,.16);padding-top:25px}.sources>p{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#a9432e}.sources ul{padding:0;list-style:none}.sources a{font-size:12px;border-bottom:1px solid}.next{margin-top:70px;background:#142c27;color:#f4eee2;padding:32px;display:flex;justify-content:space-between;font-size:9px;text-transform:uppercase;letter-spacing:.1em}@media(max-width:700px){.facts{grid-template-columns:1fr 1fr}.facts>div:nth-child(2n){border-right:0}.body{grid-template-columns:1fr;gap:30px;padding-top:50px}.next{flex-direction:column;gap:18px}}
+</style>

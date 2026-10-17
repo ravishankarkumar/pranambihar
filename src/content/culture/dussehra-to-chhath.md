@@ -5,7 +5,7 @@ section: "festivals"
 kind: "Living tradition"
 season: "Ashwin to Kartik"
 region: "Across Bihar"
-featured: true
+featured: false
 accent: "indigo"
 ---
 

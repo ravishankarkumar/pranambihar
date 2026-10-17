@@ -5,7 +5,7 @@ section: "festivals"
 kind: "Festival"
 season: "Phalguna"
 region: "Across Bihar; highly regional"
-featured: true
+featured: false
 accent: "red"
 ---
 

@@ -1,0 +1,14 @@
+---
+import { getCollection } from 'astro:content';
+import FoodSectionPage from '../../../components/FoodSectionPage.astro';
+
+const foods = await getCollection('foods');
+const byIds = (ids:string[]) => ids.map(id => foods.find(food => food.id === id)).filter((food): food is NonNullable<typeof food> => food !== undefined);
+const groups = [
+  { eyebrow:'Named for a place', title:'Where the sweet carries a town.', intro:'Place-linked sweets whose reputations travel with Silao, Gaya, Maner and Barh.', items:byIds(['silao-khaja','gaya-tilkut','maner-laddoo','barh-lai']) },
+  { eyebrow:'The lai family', title:'Many grains. Many forms of lai.', intro:'Til, chura, murhi, janera and ramdana reveal a broad winter family rather than one fixed sweet.', items:byIds(['til-lai','chura-lai','murhi-lai','janera-lai','ramdana-lai']) },
+  { eyebrow:'Festival & household table', title:'Sweetness shaped by occasion.', intro:'Preparations associated with seasons, offerings, celebrations and family knowledge.', items:byIds(['thekua','anarsa','malpua','makhana-kheer']) },
+  { eyebrow:'The halwai case', title:'Layered, filled and carefully finished.', intro:'Sweet-shop craft expressed through pastry, milk, vegetables, fillings and syrup.', items:byIds(['khaja','balushahi','chandrakala','pirukya','parwal-mithai']) },
+];
+---
+<FoodSectionPage title="Sweets" eyebrow="Food · Sweets" heading="Bihar has a sweet geography." intro="Follow Bihar’s sweets through towns, festival calendars, household practice and the changing craft of the halwai." note="This is not one undifferentiated mithai list. Names, textures, makers and associations with place remain central to every entry." groups={groups}/>

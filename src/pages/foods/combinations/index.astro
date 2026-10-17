@@ -1,0 +1,55 @@
+---
+import { getCollection } from 'astro:content';
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+
+const combinations = (await getCollection('foodCombinations')).sort((a, b) =>
+  Number(b.data.featured) - Number(a.data.featured) || a.data.title.localeCompare(b.data.title)
+);
+const featured = combinations.filter(combination => combination.data.featured);
+const more = combinations.filter(combination => !combination.data.featured);
+---
+<SiteLayout
+  title="Food Combinations"
+  description="Explore complete Bihari plates, pairings and accompaniments through occasion, region and contrast."
+  eyebrow="Plates of Bihar"
+  heading="Better together."
+  intro="Bihar’s food is often best understood as a complete plate: soft with crisp, rich with sharp, warm with cooling and everyday staples with the right accompaniments."
+  compactHero={true}
+>
+  <nav class="crumb wrap" aria-label="Breadcrumb"><a href="/foods/">Food</a><span>→</span><b>Combinations</b></nav>
+
+  <section class="introduction wrap">
+    <p class="tag">{combinations.length} combinations and growing</p>
+    <p>A combination is more than several dishes placed together. Occasion, season, texture and household habit determine what makes the plate feel complete.</p>
+  </section>
+
+  <section class="featured wrap">
+    <div class="section-heading"><div><p class="tag">Begin with the classics</p><h2>Complete plates,<br/><em>not side notes.</em></h2></div><p>These familiar combinations show how individual preparations become more expressive when eaten together.</p></div>
+    <div class="combination-grid">
+      {featured.map((combination, index) => <article class={`combination-card accent-${combination.data.accent}`}>
+        <div class="card-top"><span>{String(index + 1).padStart(2, '0')}</span><small>{combination.data.occasion}</small></div>
+        <h3>{combination.data.title}</h3>
+        <div class="plate">{combination.data.items.map((item, itemIndex) => <>{item.foodId ? <a href={`/foods/${item.foodId}/`}>{item.label}</a> : <b>{item.label}</b>}{itemIndex < combination.data.items.length - 1 && <i>+</i>}</>)}</div>
+        <p>{combination.data.summary}</p>
+        <div class="card-meta"><span>{combination.data.region}</span><i>Plate {String(index + 1).padStart(2, '0')}</i></div>
+      </article>)}
+    </div>
+  </section>
+
+  {more.length > 0 && <section class="more-combinations">
+    <div class="wrap">
+      <div class="more-heading"><div><p class="tag">The atlas expands</p><h2>More pairings to know.</h2></div><p>Regional and household combinations that deserve deeper documentation as the collection grows.</p></div>
+      <div class="compact-grid">{more.map((combination, index) => <article class={`compact-card accent-${combination.data.accent}`}>
+        <span>{String(featured.length + index + 1).padStart(2, '0')}</span>
+        <div><small>{combination.data.occasion}</small><h3>{combination.data.title}</h3><p>{combination.data.summary}</p></div>
+        <div class="compact-items">{combination.data.items.map((item, itemIndex) => <>{item.foodId ? <a href={`/foods/${item.foodId}/`}>{item.label}</a> : <b>{item.label}</b>}{itemIndex < combination.data.items.length - 1 && <i>+</i>}</>)}</div>
+      </article>)}</div>
+    </div>
+  </section>}
+
+  <section class="principles"><div class="wrap"><p class="tag">How to read the plate</p><div class="principle-grid"><article><span>01</span><h3>Contrast matters</h3><p>Soft, crisp, sour, smoky, cooling and rich elements balance one another.</p></article><article><span>02</span><h3>Occasion matters</h3><p>A breakfast, festival plate and special family meal can bring different foods together.</p></article><article><span>03</span><h3>Variation belongs</h3><p>Names and accompaniments shift between regions, communities and households.</p></article></div></div></section>
+</SiteLayout>
+
+<style>
+  .crumb{display:flex;gap:12px;padding-top:18px;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#69706b}.crumb a{border-bottom:1px solid}.crumb b{color:#142c27}.introduction{display:grid;grid-template-columns:1fr 1fr;gap:80px;padding-top:55px;padding-bottom:75px;border-bottom:1px solid rgba(20,44,39,.16)}.introduction>p:last-child{font:20px/1.55 Georgia;color:#53605b;margin:0}.tag{text-transform:uppercase;letter-spacing:.18em;color:#a9432e;font-size:10px;font-weight:bold}.featured{padding-top:90px;padding-bottom:115px}.section-heading,.more-heading{display:grid;grid-template-columns:1fr 390px;gap:60px;align-items:end;margin-bottom:48px}.section-heading h2,.more-heading h2{font:clamp(44px,5.5vw,72px)/.98 Georgia;margin:14px 0 0}.section-heading h2 em{color:#e0a33c;font-weight:normal}.section-heading>p,.more-heading>p{color:#69706b;margin:0}.combination-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}.combination-card{border-top:6px solid var(--plate-color);background:#fff;padding:24px;min-height:390px;display:flex;flex-direction:column}.card-top{display:flex;justify-content:space-between;gap:20px;align-items:start}.card-top>span{font:30px Georgia;color:var(--plate-color)}.card-top small{text-align:right;text-transform:uppercase;letter-spacing:.09em;color:#a9432e;font-size:8px;line-height:1.5;max-width:150px}.combination-card h3{font:28px/1.05 Georgia;margin:35px 0 20px}.plate{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-bottom:22px}.plate a,.plate b,.compact-items a,.compact-items b{font-size:9px;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(20,44,39,.35);font-weight:normal}.plate i,.compact-items i{font-style:normal;color:#a9432e}.combination-card>p{font-size:12px;color:#69706b;margin:0 0 30px}.card-meta{margin-top:auto;padding-top:14px;border-top:1px solid rgba(20,44,39,.14);display:flex;justify-content:space-between;gap:15px;font-size:8px;text-transform:uppercase;letter-spacing:.08em}.card-meta i{font-style:normal;color:#69706b}.more-combinations{background:#f0eadd;padding:95px 0 105px}.more-heading h2{font-size:52px}.compact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.compact-card{display:grid;grid-template-columns:45px minmax(0,1fr) minmax(170px,.7fr);gap:22px;background:#fbf8f1;padding:24px;border-top:4px solid var(--plate-color)}.compact-card>span{font:22px Georgia;color:var(--plate-color)}.compact-card small{text-transform:uppercase;letter-spacing:.08em;color:#a9432e;font-size:8px}.compact-card h3{font:25px/1.08 Georgia;margin:7px 0 10px}.compact-card p{font-size:11px;color:#69706b;margin:0}.compact-items{display:flex;flex-wrap:wrap;align-content:flex-start;gap:7px;padding-top:24px}.principles{padding:95px 0;background:#e6d8c1}.principle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:45px;margin-top:35px;border-top:1px solid rgba(20,44,39,.18);padding-top:28px}.principle-grid span{font-size:9px;color:#a9432e}.principle-grid h3{font:27px Georgia;margin:30px 0 10px}.principle-grid p{font-size:12px;color:#69706b;max-width:280px}.accent-gold{--plate-color:#b9892d}.accent-blue{--plate-color:#66888a}.accent-red{--plate-color:#a94e39}.accent-green{--plate-color:#70876d}.accent-clay{--plate-color:#b87550}.accent-indigo{--plate-color:#475b72}@media(max-width:1000px){.combination-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.compact-grid{grid-template-columns:1fr}}@media(max-width:700px){.introduction,.section-heading,.more-heading{grid-template-columns:1fr;gap:25px}.introduction{padding:45px 0 55px}.featured{padding:65px 0 80px}.combination-grid{grid-template-columns:1fr}.combination-card{min-height:0}.more-combinations,.principles{padding:70px 0}.compact-card{grid-template-columns:35px 1fr}.compact-items{grid-column:2;padding-top:0}.principle-grid{grid-template-columns:1fr;gap:18px}.principle-grid article{border-bottom:1px solid rgba(20,44,39,.15);padding-bottom:18px}}
+</style>

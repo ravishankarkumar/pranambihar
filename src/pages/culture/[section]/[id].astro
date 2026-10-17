@@ -1,0 +1,12 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import CultureEntryPage from '../../../components/CultureEntryPage.astro';
+export async function getStaticPaths() {
+  const sectionNames: Record<string,string> = { festivals:'Festivals', languages:'Languages', 'art-craft':'Art & Craft', textiles:'Textiles', 'music-performance':'Music & Performance', traditions:'Traditions', 'living-memory':'Living Memory' };
+  const entries = await getCollection('culture');
+  return entries.map(entry => ({ params:{ section:entry.data.section, id:entry.id }, props:{ entry, sectionName:sectionNames[entry.data.section] } }));
+}
+interface Props { entry: CollectionEntry<'culture'>; sectionName: string; }
+const { entry, sectionName } = Astro.props;
+---
+<CultureEntryPage entry={entry} sectionName={sectionName} />

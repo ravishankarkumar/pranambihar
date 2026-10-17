@@ -1,0 +1,45 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+export async function getStaticPaths() {
+  const escapes = await getCollection('journeys');
+  return escapes.map(escape => ({ params: { id: escape.id }, props: { escape } }));
+}
+
+interface Props { escape: CollectionEntry<'journeys'>; }
+const { escape } = Astro.props;
+const places = await getCollection('places');
+const placeById = new Map(places.map(place => [place.id, place]));
+const stops = escape.data.stops.map(id => placeById.get(id)).filter(Boolean);
+const { Content } = await render(escape);
+---
+
+<SiteLayout title={escape.data.title} description={escape.data.summary} eyebrow={`${escape.data.duration} · From ${escape.data.startFrom}`} heading={escape.data.title} intro={escape.data.summary} compactHero>
+  <article class={`escape-profile accent-${escape.data.accent}`}>
+    <nav class="crumb wrap" aria-label="Breadcrumb"><a href="/escapes/">Escapes</a><span>→</span><b>{escape.data.title}</b></nav>
+    <div class="facts wrap"><div><small>Start from</small><strong>{escape.data.startFrom}</strong></div><div><small>Allow</small><strong>{escape.data.duration}</strong></div><div><small>Travel</small><strong>{escape.data.travelTime}</strong></div><div><small>Best season</small><strong>{escape.data.bestSeason}</strong></div><div><small>Transport</small><strong>{escape.data.transport}</strong></div><div><small>Budget · Pace</small><strong>{escape.data.budget} · {escape.data.pace}</strong></div></div>
+
+    <section class="route-section wrap">
+      <div><p class="tag">Route at a glance</p><h2>Follow the thread.</h2><p>This is a flexible sequence, designed to leave room for the landscape and the unexpected.</p></div>
+      <ol>
+        {stops.map((stop, index) => <li><span>{String(index + 1).padStart(2, '0')}</span><div><small>{stop?.data.district}</small><h3>{stop?.data.name}</h3><p>{stop?.data.tagline}</p><a href={`/places/${stop?.id}/`}>Explore this place ↗</a></div></li>)}
+      </ol>
+    </section>
+
+    <section class="itinerary wrap"><div class="section-title"><p class="tag">Suggested itinerary</p><h2>A plan with room to breathe.</h2><p>Depart {escape.data.departure.toLowerCase()} and aim to return {escape.data.returnBy.toLowerCase()}.</p></div><ol>{escape.data.itinerary.map((item,index)=><li><span>{String(index+1).padStart(2,'0')}</span><div><small>{item.period}</small><p>{item.plan}</p></div></li>)}</ol></section>
+
+    <section class="planning wrap"><article><p class="tag">Eat along the way</p><ul>{escape.data.foodStops.map(item=><li>{item}</li>)}</ul></article><article><p class="tag">Practical checks</p><ul>{escape.data.practicalNotes.map(item=><li>{item}</li>)}</ul></article></section>
+
+    <section class="guide wrap"><aside><span>Before you leave</span><p>Road conditions, weather, opening times and seasonal access can change. Confirm practical details locally before setting out.</p></aside><div class="prose"><Content /></div></section>
+
+    <section class="fit wrap"><p class="tag">The mood</p><div>{[...escape.data.bestFor,...escape.data.idealGroup].map(item => <span>{item}</span>)}</div><small>Last editorial check: {escape.data.verifiedAt.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</small></section>
+    <div class="next wrap"><a href="/escapes/">← All escapes</a><a href="/places/">Browse places →</a></div>
+  </article>
+</SiteLayout>
+
+<style>
+  .escape-profile{padding-bottom:115px}.crumb{display:flex;gap:12px;padding-top:25px;padding-bottom:25px;font-size:9px;text-transform:uppercase;letter-spacing:.1em}.crumb span{color:#a9432e}.facts{display:grid;grid-template-columns:.8fr .55fr 1.4fr;border-top:1px solid rgba(20,44,39,.16);border-bottom:1px solid rgba(20,44,39,.16)}.facts>div{padding:25px 22px;border-right:1px solid rgba(20,44,39,.16)}.facts>div:last-child{border-right:0}.facts small,.facts strong{display:block}.facts small,.guide aside>span{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#a9432e}.facts strong{font:17px Georgia;font-weight:normal;margin-top:6px}.route-section{padding-top:85px;display:grid;grid-template-columns:.75fr 1.25fr;gap:85px}.route-section>div h2{font:49px/1 Georgia;margin:12px 0 22px}.route-section>div>p:last-child{color:#69706b;font-size:13px}.route-section ol{list-style:none;margin:0;padding:0;border-top:1px solid rgba(20,44,39,.17)}.route-section li{display:grid;grid-template-columns:45px 1fr;gap:22px;padding:27px 0;border-bottom:1px solid rgba(20,44,39,.17)}.route-section li>span{font-size:9px;color:#a9432e}.route-section small{text-transform:uppercase;font-size:8px;letter-spacing:.1em;color:#a9432e}.route-section h3{font:32px Georgia;margin:3px 0 5px}.route-section li p{color:#69706b;font-size:12px;margin:0 0 10px}.route-section li a{font-size:9px;text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid}.guide{display:grid;grid-template-columns:200px minmax(0,680px);justify-content:center;gap:70px;padding-top:90px}.guide aside{border-top:5px solid var(--escape-color);padding-top:18px}.guide aside p{font-size:11px;color:#69706b}.prose{font:21px/1.8 Georgia;color:#3e4b47}.prose :global(p:first-child){font-size:25px;color:#142c27}.fit{margin-top:70px;border-top:1px solid rgba(20,44,39,.17);padding-top:25px}.fit>div{display:flex;gap:10px;flex-wrap:wrap}.fit span{padding:9px 14px;border:1px solid rgba(20,44,39,.2);border-radius:30px;text-transform:uppercase;font-size:9px;letter-spacing:.09em}.next{margin-top:70px;background:#142c27;color:#f4eee2;padding:32px;display:flex;justify-content:space-between;font-size:9px;text-transform:uppercase;letter-spacing:.1em}.accent-gold{--escape-color:#b9892d}.accent-blue{--escape-color:#66888a}.accent-red{--escape-color:#a94e39}.accent-green{--escape-color:#70876d}.accent-clay{--escape-color:#b87550}.accent-indigo{--escape-color:#475b72}
+  .facts{grid-template-columns:repeat(3,1fr)}.itinerary{padding-top:90px;display:grid;grid-template-columns:.75fr 1.25fr;gap:85px}.section-title h2{font:45px/1.05 Georgia;margin:12px 0}.section-title>p:last-child{font-size:13px;color:#69706b}.itinerary ol{list-style:none;padding:0;margin:0;border-top:1px solid rgba(20,44,39,.17)}.itinerary li{display:grid;grid-template-columns:45px 1fr;gap:20px;padding:24px 0;border-bottom:1px solid rgba(20,44,39,.17)}.itinerary li>span,.itinerary small{font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:#a9432e}.itinerary li p{font:17px/1.6 Georgia;margin:6px 0}.planning{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:75px}.planning article{padding:28px;background:#e6d8c1}.planning ul{padding-left:18px;color:#4a5651;font-size:13px}.planning li{margin:12px 0}.fit>small{display:block;margin-top:22px;color:#69706b;font-size:9px;text-transform:uppercase;letter-spacing:.09em}
+  @media(max-width:700px){.facts,.route-section,.guide,.itinerary,.planning{grid-template-columns:1fr}.facts>div{border-right:0;border-bottom:1px solid rgba(20,44,39,.16)}.route-section,.guide,.itinerary{gap:32px;padding-top:60px}.route-section>div h2{font-size:41px}.next{flex-direction:column;gap:18px}}
+</style>
