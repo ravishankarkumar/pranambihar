@@ -2,6 +2,7 @@
 title: "Angika"
 localName: "अंगिका"
 summary: "A language of the historic Anga region, centred on Bhagalpur, Munger and Banka."
+seoDescription: "Angika is one of the five major regional languages Pranam Bihar calls Bihar's Panchamrit, preserving the knowledge, memory and identity of the Anga region."
 section: "languages"
 kind: "Language"
 season: "Living language"

@@ -154,6 +154,7 @@ const culture = defineCollection({
     title: z.string(),
     localName: z.string().optional(),
     summary: z.string(),
+    seoDescription: z.string().optional(),
     section: z.enum(['festivals', 'languages', 'art-craft', 'textiles', 'music-performance', 'traditions', 'living-memory']),
     kind: z.enum(['Festival', 'Language', 'Art & craft', 'Textile', 'Music & performance', 'Living tradition', 'Living memory']),
     season: z.string(),

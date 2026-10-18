@@ -2,6 +2,7 @@
 title: "Maithili"
 localName: "मैथिली"
 summary: "A literary and living language central to the cultural landscape of Mithila."
+seoDescription: "Maithili is one of the five major regional languages Pranam Bihar calls Bihar's Panchamrit, carrying Mithila's knowledge, literary heritage and cultural identity."
 section: "languages"
 kind: "Language"
 season: "Living language"

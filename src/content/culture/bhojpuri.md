@@ -2,6 +2,7 @@
 title: "Bhojpuri"
 localName: "भोजपुरी"
 summary: "A language carried through villages, cities, music, cinema and a far-reaching global diaspora."
+seoDescription: "Bhojpuri is one of the five major regional languages Pranam Bihar calls Bihar's Panchamrit, carrying local knowledge, identity, literature and oral culture."
 section: "languages"
 kind: "Language"
 season: "Living language"

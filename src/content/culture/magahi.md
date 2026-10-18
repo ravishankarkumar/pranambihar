@@ -2,6 +2,7 @@
 title: "Magahi"
 localName: "मगही"
 summary: "The language of the Magadh region, spoken across much of central and southern Bihar."
+seoDescription: "Magahi is one of the five major regional languages Pranam Bihar calls Bihar's Panchamrit, preserving the knowledge, oral culture and identity of the Magadh region."
 section: "languages"
 kind: "Language"
 season: "Living language"

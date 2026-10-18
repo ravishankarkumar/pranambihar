@@ -2,6 +2,29 @@
 import CultureSectionPage from '../../../components/CultureSectionPage.astro';
 ---
 <CultureSectionPage section="languages" title="Languages" eyebrow="Languages of home" heading="Bihar speaks in many voices." intro="Bhojpuri, Angika, Bajjika, Magahi and Maithili form the heart of this growing language atlas, alongside other languages spoken in particular regions of Bihar." note="This is a curated introduction—not a complete linguistic census. Languages flow across districts, borders, scripts and everyday identities." entryOrder={['bhojpuri', 'angika', 'bajjika', 'magahi', 'maithili']} entryGroupLabels={{ featuredEyebrow:'Five languages in focus', featuredTitle:'Major languages of Bihar', featuredIntro:'Bhojpuri, Angika, Bajjika, Magahi and Maithili receive the fullest emphasis: five large cultural worlds with their own regional voices and histories.', otherEyebrow:'Across the state', otherTitle:'Spoken in parts of Bihar', otherIntro:'Khortha, Santali, Surjapuri and Tharu connect particular parts of Bihar with wider linguistic regions.' }}>
+  <section slot="overview" class="panchamrit"><div class="wrap">
+    <div class="panchamrit-heading"><p class="tag">A Pranam Bihar commitment</p><h2>Five languages.<br/><em>One Panchamrit.</em></h2></div>
+    <div class="panchamrit-copy">
+      <p>Pranam Bihar calls Bhojpuri, Angika, Bajjika, Magahi and Maithili Bihar’s <strong>Panchamrit</strong>—five major regional languages that together hold an extraordinary breadth of memory, imagination and lived knowledge. This is our editorial expression of affection and responsibility, not a formal linguistic classification.</p>
+      <p>Where many places are identified with one or two dominant languages, Bihar is enriched by five large linguistic worlds, alongside many other languages spoken across the state. Within their proverbs, songs, stories and everyday speech live observations about weather, farming, food, healing, relationships, customs and the rhythms of local life. When a language is neglected, this knowledge becomes harder to carry forward.</p>
+      <p>Language loss is also a loss of confidence and cultural depth. Too many Biharis have been taught to hide the language of home or hear it reduced to a stereotype. Pranam Bihar is committed to bringing these languages—and the people who create in them—to wider audiences with dignity. If Bihar is to reclaim the self-respect it deserves, strengthening its cultural identity must begin with protecting, speaking and celebrating this Panchamrit.</p>
+    </div>
+  </div></section>
   <aside slot="after-index" class="directory wrap"><div><p class="tag">Continue exploring</p><h2>The full language directory</h2></div><p>This atlas is intentionally selective. Continue to the wider reference for additional speech communities, official languages and classical inheritances.</p><a href="https://en.wikipedia.org/wiki/Languages_of_Bihar" target="_blank" rel="noreferrer">Languages of Bihar ↗</a></aside>
 </CultureSectionPage>
-<style>.directory{margin-bottom:110px;padding:38px;background:#142c27;color:#f4eee2;display:grid;grid-template-columns:.8fr 1.2fr auto;gap:40px;align-items:center}.directory h2{font:32px Georgia;margin:8px 0}.directory>p{font-size:13px;color:rgba(255,255,255,.65)}.directory>a{font-size:9px;text-transform:uppercase;color:#e9a93a;border-bottom:1px solid}@media(max-width:800px){.directory{grid-template-columns:1fr;margin-bottom:80px}}</style>
+<style>
+  .panchamrit{margin-top:34px;background:#142c27;color:#f4eee2;padding:72px 0 76px}
+  .panchamrit>.wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(45px,8vw,110px);align-items:start}
+  .panchamrit .tag{color:#e9a93a}
+  .panchamrit h2{font:clamp(44px,5.3vw,72px)/.96 Georgia;margin:16px 0 0;letter-spacing:-.035em}
+  .panchamrit h2 em{color:#e9a93a;font-weight:normal}
+  .panchamrit-copy{border-top:1px solid rgba(244,238,226,.35);padding-top:8px}
+  .panchamrit-copy p{font:17px/1.75 Georgia;margin:20px 0;color:rgba(244,238,226,.76)}
+  .panchamrit-copy p:first-child{font-size:20px;color:#f4eee2}
+  .panchamrit-copy strong{color:#e9a93a;font-weight:normal}
+  .directory{margin-bottom:110px;padding:38px;background:#142c27;color:#f4eee2;display:grid;grid-template-columns:.8fr 1.2fr auto;gap:40px;align-items:center}
+  .directory h2{font:32px Georgia;margin:8px 0}
+  .directory>p{font-size:13px;color:rgba(255,255,255,.65)}
+  .directory>a{font-size:9px;text-transform:uppercase;color:#e9a93a;border-bottom:1px solid}
+  @media(max-width:800px){.panchamrit{margin-top:28px;padding:55px 0 60px}.panchamrit>.wrap{grid-template-columns:1fr;gap:34px}.panchamrit h2{font-size:clamp(44px,13vw,60px)}.panchamrit-copy p,.panchamrit-copy p:first-child{font-size:17px}.directory{grid-template-columns:1fr;margin-bottom:80px}}
+</style>

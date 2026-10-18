@@ -2,6 +2,7 @@
 title: "Bajjika"
 localName: "बज्जिका"
 summary: "A language of home and public life across the north-western districts of Bihar and adjoining Nepal."
+seoDescription: "Bajjika is one of the five major regional languages Pranam Bihar calls Bihar's Panchamrit, carrying the proverbs, knowledge and identity of north-western Bihar."
 section: "languages"
 kind: "Language"
 season: "Living language"
